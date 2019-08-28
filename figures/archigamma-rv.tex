@@ -1,0 +1,31 @@
+\documentclass{standalone}
+\usepackage{cmbright}
+\usepackage{fontspec}
+\setromanfont{CMU Sans Serif}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,shapes.geometric}
+
+\begin{document}
+\begin{tikzpicture}[white]
+\input{white}
+
+\node[database] (posters) at (-1.2,2) {posters};
+\node[encoder] (i2v) at (0,2) {Illustration2Vec};
+\node[label=above:tags] (tags) at (1,2) {\tikz{\draw[step=2.5mm] (0,0) grid (0.25,3)}};
+\node[encoder] (lasso) at (2,2) {LASSO};
+\node[encoder] (als) at (2,0) {ALS};
+\node[label=above:ratings] (ratings) at (0.5,0.3) {\tikz{\draw[step=2.5mm] (0,0) grid (1,3)}};
+\node[circle,draw,label=above:{$\gamma=0.79040$}] (steins) at (3.5,1) {$\beta$, $\gamma$};
+\node (final) at (4.5,1) {};
+
+\draw (posters) edge (i2v);
+\draw (i2v) edge (tags);
+\draw (tags) edge (lasso);
+\draw (ratings) edge (lasso);
+\draw (ratings) edge (als);
+%\draw (ratings) edge (steins);
+\draw (lasso) edge (steins);
+\draw (als) edge (steins);
+\draw (steins) edge (final);
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,35 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{fontspec}
+\usepackage{pdfrender}
+\setromanfont{Futura}
+
+\begin{document}
+\begin{tikzpicture}[scale=0.75]
+\node at (-0.5,0) {\includegraphics[width=1.8cm]{chiro.png}};
+%\node[opacity=0.6,fill=black,anchor=center,minimum width=10cm,minimum height=10cm] {};
+
+% \node[opacity=0.5] at (0.5,-0.5) {
+%     \textpdfrender{%
+%       TextRenderingMode=2,
+%       LineWidth=.1ex,
+%       StrokeColor=black,
+%       FillColor=black,
+%     }{\fontsize{90}{90}\selectfont AI}
+% };
+
+% \node[white,opacity=0.8] {
+%     \textpdfrender{%
+%       TextRenderingMode=0,
+%       LineWidth=1ex,
+%       %StrokeColor=darkgray!50, % darkgray!50
+%       FillColor=white, % cyan!70!white
+%     }{\fontsize{90}{90}\selectfont AI\\ MA}
+% };
+
+\node at (1.5,0.7) {\Huge AI};
+%\node at (2,0) {\Huge I};
+\node at (1.5,-0.7) {\Huge MA};
+%\node at (2,-1) {\Huge A};
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,15 @@
+\begin{tabular}{lllllll}
+\toprule
+        &                &          ALS &         MCMC &             ALS-WR &             VFM &          VFM+si \\
+\midrule
+movie100k & RMSE &  \textbf{1.046} &  \textbf{0.991} &  \textbf{\alert{0.931}} &  \textbf{0.942} &  \textbf{0.961} \\
+        & sigma &              -- &              -- &             1.0 &             0.5 &             0.5 \\
+        & total time (s) &          53.000 &          62.000 &          10.811 &          16.912 &         237.427 \\
+movie1M & RMSE &  \textbf{1.635} &  \textbf{0.938} &  \textbf{0.933} &  \textbf{\alert{0.879}} & --  \\
+        & sigma &              -- &              -- &             1.0 &             0.2 &             -- \\
+        & total time (s) &         524.596 &         325.000 &         270.268 &         462.688 &        -- \\
+movie10M & RMSE &  \textbf{1.819} &  \textbf{0.992} &  \textbf{0.870} &  \textbf{\alert{0.849}} &              -- \\
+        & sigma &              -- &              -- &             1.0 &             0.2 &              -- \\
+        & total time (s) &        9830.521 &              -- &        3260.297 &        4755.509 &              -- \\
+\bottomrule
+\end{tabular}
