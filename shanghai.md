@@ -22,7 +22,6 @@ header-includes:
     - \def\jin{仁}
     - \usepackage{tikz}
     - \def\ReLU{\textnormal{ReLU}}
-    - \def\xdownarrow{{\left\downarrow\vbox to 2.9\baselineskip{}\right.\kern-\nulldelimiterspace}}
     - \def\correct{\includegraphics{figures/win.pdf}}
     - \def\mistake{\includegraphics{figures/fail.pdf}}
     - \newcommand\logit{\mathop{\mathrm{logit}}}
