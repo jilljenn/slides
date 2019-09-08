@@ -6,6 +6,14 @@ all: aimangaki-light.pdf animeexpo.pdf balse.pdf dauphine.pdf dauphine-recent.pd
 pages/%.html: %.md
 	pandoc --bibliography=biblio.bib $< -o $@
 
+shanghai.pdf: shanghai.md
+	time pandoc -s --bibliography=biblio.bib --biblatex $< -t beamer -o shanghai.tex
+	xelatex shanghai
+	biber shanghai
+	xelatex shanghai
+	xelatex shanghai
+	open $@
+
 %.pdf: %.md
 	time pandoc --bibliography=biblio.bib --biblatex $< -t beamer -o $@
 	open $@

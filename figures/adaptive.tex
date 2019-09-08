@@ -1,0 +1,28 @@
+\documentclass{standalone}
+\usepackage{tikz,xltxtra}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage[italic]{mathastext}
+\usepackage{isomath}
+\definecolor{pixblue}{RGB}{53,81,250}
+
+\begin{document}
+\begin{tikzpicture}[scale=2,>=stealth]
+\node[draw,rounded corners=1mm] (x) at (1.5,2) {$Q_5$};
+\node[draw,rounded corners=1mm] (l) at (1,1) {$Q_3$};
+\node[draw,rounded corners=1mm] (r) at (2,1) {$Q_{12}$};
+\node[draw,rounded corners=1mm] (ll) at (0,0) {$Q_1$};
+\node[draw,rounded corners=1mm] (lr) at (1,0) {$Q_4$};
+\node[draw,rounded corners=1mm] (rl) at (2,0) {$Q_7$};
+\node[draw,rounded corners=1mm] (rr) at (3,0) {$Q_{14}$};
+\draw[->,thick,dashed] (x) edge node[sloped,above] {incorrect} (l);
+\draw[->,thick] (x) edge node[sloped,above] {correct} (r);
+\draw[->,thick,dashed] (l) edge (ll);
+\draw[->,thick] (l) edge (lr);
+\draw[->,thick,dashed] (r) edge (rl);
+\draw[->,thick] (r) edge (rr);
+\draw[red!70!black,thick] (x) edge[bend left=50] (r);
+\draw[red!70!black,thick] (r) edge[bend left=50,->] node[above=3mm] {Alice} (rr);
+\draw[pixblue,thick] (x) edge[bend right=50] (r);
+\draw[pixblue,thick] (r) edge[bend right=50,->] node[left] {Bob} (rl);
+\end{tikzpicture}
+\end{document}

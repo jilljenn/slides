@@ -1,0 +1,35 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{booktabs,multirow}
+\def\alert{}
+\usepackage{cmbright}
+\usepackage{fontspec}
+\setromanfont{CMU Sans Serif}
+
+\begin{document}
+\begin{tikzpicture}[
+    every edge/.style={->,draw}, %,out=0,in=180,looseness=0.5
+    x=11cm,
+]
+\node[label=below:\Huge data.csv] (data) at (1,0) {\input{../tables/data}};
+% \draw rectangle ++(2,4);
+
+\node[label=below:\Huge sparse matrix $X$] (sparse) at (2,0) {\input{../tables/fm-uiswf}};
+% \draw (4,0) rectangle ++(2,4);
+\draw (data) edge node[above] {encode} (sparse);
+\draw[very thick,<->] (1.33,2.5) -- node[above] {IRT} ++(0.38,0);
+\draw[very thick,<->] (1.745,3) -- node[above] {PFA} ++(0.925,0);
+\draw[very thick,<->] (1.48,3.5) -- node[above] {KTM} ++(1.19,0);
+
+% \node (feat) at (5.5,7) {$X$};
+% \draw (4,5) rectangle ++(3,4);
+
+%\node[text width=2cm] (log) at (3,1) {AFM: users, attempts\\PFA, items, skills, wins, fails\\IRT: users, items\\New models};
+% \node[text width=2cm] (fm) at (3,-1.5) {MIRT\\New models};
+
+% \path (sparse) edge node[above,sloped] {logistic} node[below,sloped] {regression} (log);
+% \draw (sparse) edge node[above,sloped] {factorization} node[below,sloped] {machines} (fm);
+% \draw (12,3) rectangle ++(2,4);
+% \draw (fm) edge node[above] {FM} (end);
+\end{tikzpicture}
+\end{document}
