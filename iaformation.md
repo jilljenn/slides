@@ -1,10 +1,9 @@
-% IA, éducation et formation\vspace{3mm}
-% Jill-Jênn Vie\newline\newline\includegraphics[height=0.8cm]{figures/aip-logo.png}\qquad\includegraphics[height=1.3cm]{figures/inria.jpg}\newline aip.riken.jp \qquad \qquad \qquad inria.fr
+% IA, éducation et formation\vspace{1pt}
+% Jill-Jênn Vie\newline\newline\includegraphics[height=0.7cm]{figures/aip-logo.png}\qquad\inria\newline aip.riken.jp \qquad \qquad inria.fr
 % 25 octobre 2019
 ---
 theme: Frankfurt
 section-titles: false
-handout: true
 biblio-style: authoryear
 header-includes:
     - \usepackage{booktabs}
@@ -13,6 +12,7 @@ header-includes:
     - \usepackage{multirow}
     - \DeclareMathOperator\logit{logit}
     - \def\ReLU{\textnormal{ReLU}}
+    - \def\inria{\includegraphics[height=1cm]{figures/inria.jpg}}
     - \newcommand\mycite[3]{\textcolor{blue}{#1} "#2".~#3.}
 biblatexoptions:
     - maxbibnames=99
@@ -29,8 +29,9 @@ Comment utiliser ces données pour profiter aux autres apprenants ?
 
 ### Challenges
 
-- Ne pas poser trop de questions
+- Ne pas poser trop de questions aux apprenants
 - Les apprenants évoluent au cours du temps
+- Quelles données utiliser ?
 - Quelle fonction objectif choisir ?
 
 ## Tests adaptatifs
@@ -38,58 +39,63 @@ Comment utiliser ces données pour profiter aux autres apprenants ?
 \centering
 ![](figures/adaptive.pdf)
 
-## Prédiction de la performance des étudiants
 
-### Data
+# Tests de positionnement
 
-A population of students answering questions
+## Référentiel de compétences numériques DIGCOMP 2.0
 
-- Events: "Student $i$ answered question $j$ correctly/incorrectly"
+\centering
+\includegraphics[width=0.5\linewidth]{figures/digcomp.png}
 
-### Goal
-
-- Learn the difficulty of questions automatically from data
-- Measure the knowledge of students
-- Potentially optimize their learning
-
-### Assumption
-
-Good model for prediction $\rightarrow$ Good adaptive policy for teaching
-
-## Exemples
-
-- Pix, la certification des compétences numériques
-- Systèmes de recommandation
-- Modélisation de la mémoire
-
-## Pix
-
-- Recherche d'information sur Internet
+- Informations et données
+  - Ex. rechercher de l'information sur Internet
 - Communication collaboration
+- Création de contenu
+- Protection et sécurité
+- Résolution de problèmes
 
-## Un exemple de problème
+## Certification des compétences numériques
 
-### Ludique
+Avant : B2i.
 
-Montrésor, rue des Perrières ?
+Maintenant :
+
+![](figures/pix.png){width=2cm}
+
+La certification Pix remplace le B2i pour les lycéens  
+(JO du 1\textsuperscript{er} septembre 2019)
+
+- 1 intrapreneur au ministère de l'Éducation
+- 3 chercheurs concepteurs d'épreuves
+- 2 développeurs
+- +1 concepteur de l'algorithme adaptatif
+
+## Un exemple de problème Pix
+
+\centering \Large
+Dans le village de Montrésor,  
+sur quelle rue débouche la rue des Perrières ?
+
+\vspace{1cm} \pause
+
+\normalsize
+$\rightarrow$ permet de valider l'acquis \@rechercheInfo3
 
 ## Types de tests
 
 ### Tests de positionnement
 
-Évaluer le niveau des gens ; peut être un faible enjeu, cartographier les connaissances.
+Évaluer son niveau en peu de questions  
+Faible enjeu ; basé sur une cartographie des connaissances
 
 ### Tests de certification
 
-Fort enjeu.
+Fort enjeu : l'apprenant peut le valoriser
 
 ### Tests de progression
 
+"Quoi apprendre ensuite ?"  
 Optimiser l'apprentissage humain
-
-# Test de positionnement
-
-## Acquis
 
 
 ## Théorie de la réponse à l'item
@@ -97,21 +103,50 @@ Optimiser l'apprentissage humain
 \centering
 ![](figures/rasch-curve.pdf)
 
-## Choosing the objective function to optimize
+Utilisé par les certifications PISA, GMAT, etc.
 
-\alert{Maximiser l'information} $\rightarrow$ learners fail 50% of the time (good for the assessing institution, not for the learning student)
+## Exemple de test adaptatif :
 
-\alert{Maximize success rate} $\rightarrow$ asking too easy questions
+- On pose une question de niveau 2
+- L'apprenant \alert{réussit}
+- On lui pose une question de niveau 6
+- L'apprenant \alert{échoue}
+- On lui pose une question de niveau 4
+- L'apprenant \alert{réussit}
+- Il est de niveau 5
 
-\alert{Maximize the growth of the success rate} (Clement et al. 2015)
+## Choisir la bonne fonction à optimiser
 
-\alert{Compromise exploration} (items that we don't know)  
-and \alert{exploitation} (items that measure well)
+\alert{Maximiser l'information} $\rightarrow$ les apprenants échouent 50 % du temps (bien pour l'évaluateur, pas pour les apprenants)
 
-\alert{Identify a gap from the learner} (Teng et al. ICDM 2018)  
-+ assume that a item brings less learning when it was administered before (Seznec et al. AISTATS 2019, SequeL)
+\pause
 
-Increasing number of works(hops) about reinforcement learning in education
+\alert{Maximiser le taux de succès} $\rightarrow$ on pose artificiellement des questions trop faciles
+
+\pause
+
+\alert{Maximiser la croissance du taux de succès}  
+Travaux d'une équipe Inria à Bordeaux (Clement et al. 2015)
+
+\pause
+
+\alert{Identifier une lacune de l'apprenant le plus vite possible}  
+(Seznec et al. 2019)
+
+## Algorithme conçu pour Pix
+
+Maximiser le nombre moyen d'acquis validés ou invalidés
+
+Le code source de l'algorithme adaptatif est \alert{ouvert}  
+(pix.fr, code sur GitHub sous licence AGPLv3)  
+Déjà 350 000 comptes créés, 50 000 certifications délivrées
+
+\centering
+\includegraphics[width=\linewidth]{figures/example.pdf}
+
+**Article**
+
+:   \scriptsize\mycite{Jill-Jênn Vie, Fabrice Popineau, Françoise Tort, Benjamin Marteau, and Nathalie Denos (2017)}{A Heuristic Method for Large-Scale Cognitive-Diagnostic Computerized Adaptive Testing}{ACM Conference on Learning at Scale}
 
 ## Le but de cette étape ?
 
@@ -119,11 +154,11 @@ Increasing number of works(hops) about reinforcement learning in education
 
 ![](figures/embedding1.png){width=60%}
 
-## Interpreting the components
+## Identifier les points forts
 
 ![](figures/embedding2.png)
 
-## Interpreting the components
+## Et les lacunes
 
 ![](figures/embedding3.png)
 
@@ -133,85 +168,118 @@ Increasing number of works(hops) about reinforcement learning in education
 
 ![](figures/dkt.png)
 
+Si l'on peut simuler l'apprentissage,  
+alors on peut optimiser l'apprentissage
+
 # Systèmes de recommandation
 
 ## Systèmes de recommandation
 
-À partir de notes, on est capables de généraliser aux autres
+### Exemple
 
-github.com/mangaki/zero
+\begin{tabular}{ccccc}
+& \includegraphics[height=2.5cm]{figures/1.jpg} & \includegraphics[height=2.5cm]{figures/2.jpg} & \includegraphics[height=2.5cm]{figures/3.jpg} & \includegraphics[height=2.5cm]{figures/4.jpg}\\
+Sacha & \only<1>{?}\only<2>{\alert{3}} & 5 & 2 & \only<1>{?}\only<2>{\alert{2}}\\
+Ondine & 4 & 1 & \only<1>{?}\only<2>{\alert{4}} & 5\\
+Pierre & 3 & 3 & 1 & 4\\
+Joëlle & 5 & \only<1>{?}\only<2>{\alert{2}} & 2 & \only<1>{?}\only<2>{\alert{5}}
+\end{tabular}
 
 ## Cartographie des goûts
 
 ![](figures/svd2.png)
 
-## Données obtenues
+## Comment faire si on n'a pas, ou trop peu, de notes ?
 
-Retour explicite : notes
+Quelles autres données sont à notre disposition ?  
+(texte, image, vidéo)
 
-Retour implicite : à quel point une formation les intéresse, etc.
+## Pour les films : nous avons des posters !
 
-Utiliser d'autres données
+![](figures/posters.png)
 
-## Par exemple, le contenu graphique
+## Illustration2Vec (Saito and Matsui, 2015)
 
-![](figures/fate2.jpg)
+\centering
+
+![](figures/fate2.png){height=70%}\ 
+![](figures/i2v.png){height=70%}\ 
+
+- Réseau de neurones entraîné sur des millions de photos
+- Puis réentraîné sur 1,5M illustrations de manga, avec tags
+- Renvoie les tags les plus probables parmi 502 possibles
+
+## Autres types de données
+
+Signaux explicites : notes des utilisateurs
+
+Signaux implicites : à quel point un item les intéresse, etc.
+
+\vspace{1cm}
+
+Pour en savoir plus : `https://github.com/mangaki/zero`
 
 # Mémoire
 
-## Modélisation de la mémoire
-
-Optimize scheduling of items in spaced repetition systems ($\sim$ Anki)
+## Duolingo
 
 \centering
-\includegraphics[width=0.5\linewidth]{figures/anki.png}
+\includegraphics[width=0.42\linewidth]{figures/reverse_tap.png}
 
-\raggedright
-Use knowledge tracing machines with extra features: counters of attempts at skill level for different time windows in the past
-
-**EDM 2019**
-
-:   \scriptsize
-\mycite{Benoît Choffin, Fabrice Popineau, Yolaine Bourda, and Jill-Jênn Vie (2019)}{DAS3H: Modeling Student Learning and Forgetting for Optimally Scheduling Distributed Practice of Skills}{\alert{Best Paper Award}}
-
-## Leitner system
-
-![](figures/leitner.png)
-
-## Mémoriser le nombre d'essais
-
-![](figures/time-windows.pdf)
-
-## Données de Duolingo
+## Données de Duolingo (data challenge)
 
 ![](figures/duolingo.png)
 
 ![](figures/duolingo2.png)
 
+## Systèmes à répétition espacée (Leitner, 1970s)
+
+\includegraphics[width=0.5\linewidth]{figures/anki.png}\includegraphics[width=0.5\linewidth]{figures/leitner.png}
+
+## Modélisation de la mémoire
+
+Optimiser la planification de cartes
+
+Notre solution :
+
+- compter le nombre d'essais (heure, jour, semaine, mois, $\infty$)
+- compter le nombre de succès dans ces mêmes temps
+
+Apprendre par machine learning :
+
+- la difficulté des exercices
+- celle des acquis
+- le progrès par essai et par succès
+
+**Article**
+
+:   \scriptsize
+\mycite{Benoît Choffin, Fabrice Popineau, Yolaine Bourda, and Jill-Jênn Vie (2019)}{DAS3H: Modeling Student Learning and Forgetting for Optimally Scheduling Distributed Practice of Skills}{\alert{Best Paper Award at EDM 2019}}
+
+## Mémoriser le nombre d'essais
+
+\centering
+![](figures/time-windows.pdf)
+
 # Conclusion
 
-## Take home message
+## Points à retenir
 
-\alert{Factorization machines} are a strong baseline for knowledge tracing that take many models as special cases
+\alert{Tests de positionnement} Importance d'adapter l'évaluation,  
+et de bien choisir la fonction à optimiser (évaluation, progression)
 
-\alert{Recurrent neural networks} are powerful because they track the evolution of the latent state (try simpler dynamic models?)
+\alert{Systèmes de recommandation} Plus proches voisins  
+Des données de tout type peuvent améliorer la précision,  
+mais attention encore aux biais
 
-\alert{Deep factorization machines} may require more data/tuning, but neural collaborative filtering offer promising directions
+\alert{Mémoire} En simulant l'humain au plus près,  
+on peut optimiser l'enseignement
 
-Next step: use this model and optimize human learning
-
-## Any suggestions are welcome!
-
-Feel free to chat:
+## Merci pour votre attention !
 
 \centering
+Jill-Jênn Vie  
+Twitter : \@jjvie  
 `vie@jill-jenn.net`
 
-\raggedright
-All code:
-
-\centering
-`github.com/jilljenn/ktm`
-
-\raggedright
-Do you have any questions?
+Questions ?

@@ -16,10 +16,14 @@ shanghai.pdf: shanghai.md
 
 %.pdf: %.md
 	time pandoc --bibliography=biblio.bib --biblatex $< -t beamer -o $@
-	open $@
+	evince $@
 
 %.tex: %.md
-	time pandoc -s --bibliography=biblio.bib --verbose $< -o $@
+	time pandoc -s --verbose $< -t beamer -o $@  # --bibliography=biblio.bib --biblatex
+	pdflatex $@
+	evince ${@:.tex=.pdf}
+	# biber ${@:.tex=}
+	# pdflatex $@
 
 %.pdf: %.tex
 	xelatex $<
