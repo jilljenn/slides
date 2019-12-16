@@ -574,4 +574,4 @@ Try it: \alert{mangaki.fr} \hfill Twitter: \alert{@MangakiFR}
 - AI for Manga & Anime: \alert{research.mangaki.fr}
 
 \centering
-\includegraphics[height=3cm]{figures/twingan.jpg}
+\includegraphics[height=3cm]{figures/styletransfer.jpg}

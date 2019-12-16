@@ -19,6 +19,7 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [animeexpo.html](animeexpo.html)
 - [balse.html](balse.html)
 - [dauphine.html](dauphine.html)
+- [deeprec.html](deeprec.html)
 - [ens.html](ens.html)
 - [hnkansai2018.html](hnkansai2018.html)
 - [manpu.html](manpu.html)

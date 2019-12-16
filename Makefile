@@ -14,16 +14,19 @@ shanghai.pdf: shanghai.md
 	xelatex shanghai
 	open $@
 
+deeprec.md: deeprec-master.md
+	./prepare.py $< --handout > $@
+
 %.pdf: %.md
 	time pandoc --bibliography=biblio.bib --biblatex $< -t beamer -o $@
-	evince $@
+	# --bibliography=biblio.bib --biblatex
 
 %.tex: %.md
-	time pandoc -s --verbose $< -t beamer -o $@  # --bibliography=biblio.bib --biblatex
+	time pandoc -s --bibliography=biblio.bib --biblatex --verbose $< -t beamer -o $@
+	pdflatex $@
+	biber ${@:.tex=}
 	pdflatex $@
 	evince ${@:.tex=.pdf}
-	# biber ${@:.tex=}
-	# pdflatex $@
 
 %.pdf: %.tex
 	xelatex $<
@@ -33,6 +36,9 @@ clean:
 	rm -f *.aux *.bbl *.bcf *.blg *.log *.nav *.out *.run.xml *.snm *.synctex \
 		  *.synctex.gz *.toc *.vrb
 	rm -f */*.log */*.aux
+
+fullclean:
+	rm '#'*'#' *~
 
 check:
 	grep --color includegraphics */*.tex
