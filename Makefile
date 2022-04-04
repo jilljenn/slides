@@ -15,7 +15,8 @@ shanghai.pdf: shanghai.md
 	open $@
 
 deeprec.md: deeprec-master.md
-	./prepare.py $< --handout > $@
+	# ./prepare.py $< --handout > $@
+	./prepare.py $< > $@
 
 %.pdf: %.md
 	time pandoc --bibliography=biblio.bib --biblatex $< -t beamer -o $@
