@@ -2,6 +2,8 @@
 % Jill-Jênn Vie
 % New in ML workshop
 ---
+aspectratio: 169
+colorlinks: true
 institute:
   - \includegraphics[width=3cm]{figures/inria.png}\includegraphics[width=3cm]{figures/soda.png}
 biblatexoptions:
@@ -28,9 +30,11 @@ header-includes:
 \centering
 \texttt{pip install tryalgo}
 
-# Writing code to oneself \hfill Writing code for someone else
+# \hspace{2cm} Writing code to oneself \hfill Writing code for someone else
 
-![](figures/code-myself.png)
+\centering
+
+![](figures/code-myself.png){width=75%}
 
 # A cliché
 
@@ -40,7 +44,7 @@ Quote:\medskip
 
 But at minimum you code for \alert{your future self}.
 
-\footnotesize \raggedleft (for example the version of you who is going to write your PhD thesis)
+\footnotesize \raggedleft (e.g., the version of you who is going to write your PhD thesis)
 
 \normalsize \raggedright
 Versioning is a way to keep a backup of your work
@@ -79,18 +83,18 @@ Versioning is a way to keep a backup of your work
 
 \footnotesize \raggedleft
 (also an `--aggressive` mode that will directly fix your code, use with caution)
-\normalsize
 
+\normalsize \raggedright
 `pylint` does static analysis: warns you about useless variables, etc.
 
 \vspace{1cm}
 
 Existing equivalents in other languages
 
-# Automatically writing beautiful docs: Sphinx's autodoc {.fragile}
+# Automatically writing beautiful docs: \hfill Sphinx's autodoc {.fragile}
 
 :::::: {.columns}
-::: {.column width="65%"}
+::: {.column width="55%"}
 \tiny
 ```python
 def dijkstra(graph, weight, source=0, target=None):
@@ -125,7 +129,7 @@ def dijkstra(graph, weight, source=0, target=None):
     return dist, prec
 ```
 :::
-::: {.column width="35%"}
+::: {.column width="45%"}
 ![](figures/tryalgo-doc.png)
 :::
 ::::::
@@ -133,6 +137,8 @@ def dijkstra(graph, weight, source=0, target=None):
 # Writing tests {.fragile}
 
 No need to do it for everything, but some parts of your code.
+
+\small
 
 ```shell-session
 jj@altaria:~/code/tryalgo$ python -m unittest
@@ -146,7 +152,7 @@ OK
 # What a test looks like {.fragile}
 
 :::::: {.columns}
-::: {.column width="60%"}
+::: {.column width="50%"}
 \tiny
 ```python
 class OurQueue:
@@ -182,7 +188,7 @@ class OurQueue:
                 self.cursors[pos] += 1
 ```
 :::
-::: {.column width="40%"}
+::: {.column width="50%"}
 \tiny
 ```python
 import unittest
@@ -214,8 +220,7 @@ class TestOurQueue(unittest.TestCase):
         q.push(3600 * 24 * 7 * 30)
         q.push(3600 * 24 * 7 * 30 + 1)
         self.assertEqual(
-            q.get_counters(
-                3600 * 24 * 7 * 30 + 1),
+            q.get_counters(3600 * 24 * 7 * 30 + 1),
             [11, 2, 2, 2, 2])
 ```
 :::
@@ -225,7 +230,8 @@ class TestOurQueue(unittest.TestCase):
 
 ![](figures/build-passing.png)
 
-Make sure you don't break the existing version, so that other people software, which relies on yours, won't break.
+Make sure you don't break the existing version,  
+so that other people software, which relies on yours, won't break.
 
 Ex. Travis, CircleCI, GitHub actions
 
@@ -234,9 +240,9 @@ Ex. Travis, CircleCI, GitHub actions
 Sometimes on servers you can only run jobs as bash scripts.  
 It's good to provide hyper-parameters in the command line.
 
-\begin{lrbox}{\mintedbox}
-\RecustomVerbatimEnvironment{Verbatim}{BVerbatim}{}
-\begin{minted}{python}
+\scriptsize
+
+```python
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generates tokens.')
     parser.add_argument('filename', type=str, nargs='?', default='text',
@@ -246,12 +252,8 @@ if __name__ == '__main__':
     parser.add_argument('--l', type=int, nargs='?', default=42,
                         help='Length of these sequences')
     args = parser.parse_args()
-\end{minted}
-\end{lrbox}
+```
 
-\resizebox{\textwidth}{!}{\usebox{\mintedbox}}
-
-\small
 ```shell-session
 (venv) jj@altaria:~/code/markov.py$ python markov.py -h
 usage: markov.py [-h] [--n [N]] [--l [L]] [filename]
@@ -280,7 +282,7 @@ with open(os.path.join(folder, 'results-{}.json'.format(iso_date)), 'w') as f:
 ```
 
 \normalsize
-Creates `assistments09/results-2022-07-06T23:04:22.json` which contains:
+Creates `assistments09/results-2022-07-06T23:04:22.097694.json`  which contains:
 
 \scriptsize
 
@@ -301,25 +303,33 @@ Creates `assistments09/results-2022-07-06T23:04:22.json` which contains:
 
 # A personal suggestion
 
-\setbeamercovered{transparent}
-
 Using `Makefile`
 
 It defines a dependency graph, for example:
 
 \centering
+LaTeX figures $\to$ figures PDF $\to$ article / slides
+
+\pause \vspace{1cm}
+
+Here is the Makefile of my CV:
+
+\includegraphics{figures/makefile-cv.png}
+
+# Another example
+
+\setbeamercovered{transparent}
+
+\centering
 data $\to$ preprocessed data $\to$ \alert<2>{logs} (incl. hyper-parameters) $\to$ \alert<3>{plots}
-\raggedright
 
 \vspace{1cm}
+\raggedright
 
-\only<1>{Here is the Makefile of my CV:
+\uncover<2>{Logging metrics as much as possible\\
+(it's OK to log several times at different locations: files, standard output)}
 
-\includegraphics{figures/makefile-cv.png}}
-
-\only<2->{\uncover<2>{Logging metrics as much as possible (it's OK to log several times at different locations: files, standard output)}
-
-\uncover<3>{Then your plots will only be from your logs; you can only recompute what has changed}}
+\uncover<3>{Then your plots will only be from your logs; you can only recompute what has changed}
 
 # Machine-learning specific
 
@@ -342,20 +352,20 @@ Do not forget to cite other people's software, e.g. \includegraphics[width=2cm]{
 \pause \pause
 
 ```{=latex}
-Made using \mintinline{latex}{\usepackage{biblatex-software}}, thanks \raisebox{-8pt}{\includegraphics[width=2cm]{figures/swh.jpg}}
+\hfill $\uparrow$ \mintinline{latex}{\fullcite} made using \mintinline{latex}{\usepackage{biblatex-software}}, thanks \raisebox{-8pt}{\includegraphics[width=2cm]{figures/swh.jpg}}
 ```
 
-# Stuff I didn't cover
+# Stuff I didn't cover {.fragile}
 
 `screen` for keeping an interactive session open even while you leave the server.
 
 `tmux` is similar and better: great for pair-programming.
 
-`pdb`, the Python debugger.
+\mintinline{shell}{python -m pdb}, the Python debugger.
 
 `magic-wormhole` for sending (non-sensitive) data over the Internet
 
-`binder`: one-click banner that opens a temporary Jupyter notebook or Lab in the browser with your repo (amazing, Berkeley! \Clap)
+[![](figures/binder.png)](https://jupyter.org/binder) one-click banner that opens a temporary Jupyter notebook or Lab in the browser with your repo (amazing, JupyterHub Core Team! \Clap)
 
 `ansible-playbook` for automating a remote install
 
