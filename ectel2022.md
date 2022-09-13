@@ -40,11 +40,6 @@ header-includes:
 ## People pseudonymize, but it's not enough
 @narayanan2008robust managed to de-anonymize a Netflix pseudonymized dataset of seen movies with IMDb
 
-## People $k$-anonymize, but high-dimensional data (e.g. mobility) is rarely $k$-anonymizable
-
-- 4 timestamp-location points are needed to uniquely identify 95\% of individual trajectories in a dataset of 1.5M rows \citep{de2013unique}
-- 15 demographic points are enough to re-identify 99.96\% of Americans \citep{rocher2019estimating}
-
 <!---
 # Differentially private graphical models
 
@@ -73,6 +68,8 @@ User embeddings however should be drawn from distribution
 ![User embeddings for Assistments 2009](figures/gaussian.png){width=50%}
 
 # Example data
+
+![](figures/duolingo0.png)
 
 \begin{table}[h]
 %\caption{Example of minimal tabular dataset.}
@@ -105,7 +102,7 @@ So in our case there are two models:
 
 # Item response theory for response pattern generation
 
-Ex. $r_{ij}$ is 1 if user $i$ got a positive outcome on action (item) $j$
+Ex. $r_{ij}$ is 1 if user $i$ gets a positive outcome on action (item) $j$
 
 $$p_{ij} = \Pr(R_{ij} = 1) = \sigma(\theta_i - d_j)$$
 
@@ -116,36 +113,21 @@ where $\theta_i$ is ability of user $i$ and $d_j$ is difficulty of action $j$
 
 Trained using Newton's method: minimize log-loss $\mathcal{L} = \sum_{i, j} (1 - r_{ij}) \log (1 - p_{ij}) + r_{ij} \log p_{ij}$
 
-# Logistic regression with sparse features
+# Generation
 
-Let us encode the event (user $i$, item $j$) as a two-hot vector $\bm{x}$:
-
-\centering
-
-![](figures/lr-diff.pdf)
-
-
-$p_{ij} = \sigma(\langle \alert{\textbf{w}}, \textbf{x} \rangle) = \sigma(\sum_k \alert{w_k} x_k) = \sigma(\alert{\theta_i} - \alert{d_j})$
-
-
-# Utility
+# Utility: fake dataset should be useful
 
 \centering
-Practictioners who conduct study on the real and fake dataset should have \alert{similar} findings
+Practitioners who conduct study on the real and fake dataset should have \alert{similar} findings
 
 $\downarrow$
 
-Trained model on original dataset should have parameters that are \alert{not too far} in RMSE
+Trained IRT model on original dataset should have parameters that are \alert{not too far} in $RMSE = \sqrt{\sum_{j = 1}^N (d_j - \widehat{d_j})^2}$
 
-\raggedright
+\raggedright \footnotesize
+(where $d_j, \widehat{d_j}$ are item $j$'s inferred difficulty from the real and fake datasets)
 
-We also consider weighted RMSE:
-
-$$ wRMSE = \sqrt{\sum_{j = 1}^N w_j (d_j - \widehat{d_j})^2} $$
-
-where $w_j \in [0, 1]$ is the frequency of action $j$ in the training set, and $d_j, \widehat{d_j}$ are the original and generated inferred difficulties.
-
-# Membership inference: Reidentification task
+# Membership inference: reidentification task
 
 \centering
 It should not be easy to re-identify people / the fake dataset should not leak too much information about participants
@@ -177,13 +159,13 @@ An attacker has to guess, from a broader population, who was in the training set
 
 (framework inspired by NeurIPS "Hide and Seek" challenge in healthcare by \cite{jordon2020hide})
 
-# Exaample scenarios of membership inference
+# Example scenarios of membership inference
 
 Membership inference seems innocuous, but could lead to privacy issues.
 
-For instance, if we want to publish a dataset of test results for students with special needs using an anonymizing method, it shouldn't be possible to guess who was selected to generate the published dataset.
+For instance, if we want to publish a dataset of test results for students with \alert{special needs} using an anonymizing method, it shouldn't be possible to guess who was selected to generate the published dataset.
 
-Should the system be able to adapt to people with special needs, without guessing the condition?
+<!-- Should the system be able to adapt to people with special needs, without guessing the condition? -->
 
 More generally, any leak of information is potentially bad
 
@@ -214,6 +196,14 @@ LCS: $39 - 39 - 17$ with length 3
 For each user in the original dataset, this heuristic gives a \alert{matching score}, and we compute the Area under the ROC curve (AUC) associated with those scores for the training dataset classification task
 
 Users with too few actions (in the information entropy sense) are excluded
+
+# Experiments
+
+Baseline: Drop $p \%$ is dropping $p \%$ of rows and renumbering the user IDs
+
+Sequence generation model: RNN or Markov chain
+
+Predicting the outcome: IRT
 
 # Histogram of actions ($y$-axis: frequency)
 
@@ -248,10 +238,22 @@ $\leftarrow$ low reidentification score, lower is better (hard to identify)
 
 # Take home message
 
-- Let's share the data of people who do not exist
+We managed to generate fake datasets that are:
+
+- useful for practitioners (because item difficulties can be estimated similarly)
+- hard to re-identify (because membership inference is not possible)
+
+Extensions:
+
+- Our approach can be easily generalized to more complicated datasets
+- With more columns it is even easier to re-identify
+
+Let's share the data of people who do not exist!  
+Synthetic datasets for reproducibility
 
 \vspace{1cm}
 
-\pause
+# Thanks! Questions?
 
-Thanks! Questions? \hfill These slides on \href{https://jjv.ie/slides/ectel2022.pdf}{jjv.ie/slides/ectel2022.pdf} and the code on \href{https://github.com/Akulen/PrivGen}{github.com/Akulen/PrivGen}
+- Slides on \href{https://jjv.ie/slides/ectel2022.pdf}{jjv.ie/slides/ectel2022.pdf}
+- Code on \href{https://github.com/Akulen/PrivGen}{github.com/Akulen/PrivGen}
