@@ -1,5 +1,5 @@
 % Privacy-Preserving Synthetic Educational Data Generation
-% \alert{Jill-Jênn Vie}; Tomas Rigaux; Sein Minn
+% Jill-Jênn Vie; \alert{Tomas Rigaux}; Sein Minn
 % September 15, 2022
 ---
 institute: \includegraphics[width=2cm]{figures/soda.png}
@@ -20,22 +20,20 @@ header-includes:
 
 # Intro
 
-- It is hard to get access to sensitive data[^1]
+- It is hard to get access to sensitive data
 - A dataset posted online may be archived forever
 - How about having instead access to:
     - statistics
     - conditional probabilities
     - a fake dataset? (ex. for reproducibility)
 
-[^1]: Is it for the sake of privacy, safety, or just administrative sadism?
-
 # Outline
 
 - Privacy
 - Metrics: utility and re-identification
 - Attack models
-    - Weak: Membership inference
-    - Strong: Train on real and fake, learn to distinguish the two
+    - Membership inference
+    - Heuristic attacker
 
 # Striking facts
 
@@ -102,8 +100,8 @@ user 2487 got token ``apple'' correct \\ \bottomrule
 
 So in our case there are two models:
 
-- Sequence generation (Markov chain, RNN)
-- Response pattern generation (IRT, Bayesian networks)
+- Sequence generation: Predicting the next action ID (Markov chain, RNN)
+- Response pattern generation: Predicting  the outcome given user ID and action ID (IRT, Bayesian networks)
 
 # Item response theory for response pattern generation
 
@@ -127,17 +125,17 @@ Let us encode the event (user $i$, item $j$) as a two-hot vector $\bm{x}$:
 ![](figures/lr-diff.pdf)
 
 
-$p_{ij} = \sigma(\langle \alert{\bm{w}}, \bm{x} \rangle) = \sigma(\sum_k \alert{w_k} x_k) = \sigma(\alert{\theta_i} - \alert{d_j})$
+$p_{ij} = \sigma(\langle \alert{\textbf{w}}, \textbf{x} \rangle) = \sigma(\sum_k \alert{w_k} x_k) = \sigma(\alert{\theta_i} - \alert{d_j})$
 
 
 # Utility
 
 \centering
-Practictioners who conduct study on the real and fake dataset should have similar findings
+Practictioners who conduct study on the real and fake dataset should have \alert{similar} findings
 
 $\downarrow$
 
-Trained model on original dataset should have parameters that are not too far in RMSE
+Trained model on original dataset should have parameters that are \alert{not too far} in RMSE
 
 \raggedright
 
@@ -145,16 +143,16 @@ We also consider weighted RMSE:
 
 $$ wRMSE = \sqrt{\sum_{j = 1}^N w_j (d_j - \widehat{d_j})^2} $$
 
-where $w_j \in [0, 1]$ is the frequency of action $j$ in the training set.
+where $w_j \in [0, 1]$ is the frequency of action $j$ in the training set, and $d_j, \widehat{d_j}$ are the original and generated inferred difficulties.
 
-# Reidentification task
+# Membership inference: Reidentification task
 
 \centering
 It should not be easy to re-identify people / the fake dataset should not leak too much information about participants
 
 $\downarrow$
 
-An attacker has to guess, from a broader population, who was in the training set
+An attacker has to guess, from a broader population, who was in the training set (predict 1 if in training, 0 otherwise)
 
 \centering
 \begin{tikzpicture}[
@@ -179,17 +177,19 @@ An attacker has to guess, from a broader population, who was in the training set
 
 (framework inspired by NeurIPS "Hide and Seek" challenge in healthcare by \cite{jordon2020hide})
 
-# Membership inference
+# Exaample scenarios of membership inference
 
 Membership inference seems innocuous, but could lead to privacy issues.
 
 For instance, if we want to publish a dataset of test results for students with special needs using an anonymizing method, it shouldn't be possible to guess who was selected to generate the published dataset.
 
+Should the system be able to adapt to people with special needs, without guessing the condition?
+
 More generally, any leak of information is potentially bad
 
 # Reidentification
 
-We use a heuristic based on Longest Common Subsequence to reidentify
+We use a heuristic based on Longest Common Subsequence (LCS) to reidentify
 
 \begin{figure}
 \centering
@@ -211,7 +211,7 @@ We use a heuristic based on Longest Common Subsequence to reidentify
 LCS: $39 - 39 - 17$ with length 3
 \end{figure}
 
-For each user in the original dataset, this heuristic gives a score, and we compute the AUC of the ROC curve associated with those scores for the training dataset classification task
+For each user in the original dataset, this heuristic gives a \alert{matching score}, and we compute the Area under the ROC curve (AUC) associated with those scores for the training dataset classification task
 
 Users with too few actions (in the information entropy sense) are excluded
 
@@ -227,6 +227,10 @@ Actions
 
 ![](figures/auc-wrmse-assist.pdf){width=49%}
 ![](figures/auc-wrmse-duolingo.pdf){width=49%}
+
+$\downarrow$ low distance between real and fake parameters, lower is better (high utility)
+
+$\leftarrow$ low reidentification score, lower is better (hard to identify)
 
 <!---
 # Slided bag of events for SNDS
@@ -250,4 +254,4 @@ Actions
 
 \pause
 
-Thanks! Questions? \hfill These slides on \href{https://jjv.ie/slides/heka.pdf}{jjv.ie/slides/heka.pdf}
+Thanks! Questions? \hfill These slides on \href{https://jjv.ie/slides/ectel2022.pdf}{jjv.ie/slides/ectel2022.pdf} and the code on \href{https://github.com/Akulen/PrivGen}{github.com/Akulen/PrivGen}
