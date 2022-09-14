@@ -138,11 +138,9 @@ Trained using Newton's method: minimize log-loss $\mathcal{L} = \sum_{i, j} (1 -
 
 # Generation
 
-Generative model
+We select users from the original dataset to form a training dataset, either by random sampling or following a criterion (such as students who went to a given school, or students with special needs)
 
-For example, Bayesian networks:
-
-![](figures/privbayes.png){width=50%}
+Then we use a generative model to make a fake dataset
 
 \centering
 \begin{tikzpicture}[
@@ -181,13 +179,13 @@ Trained IRT model on original dataset should have parameters that are \alert{not
 \node[data] (original) at (0,0) {Original};
 \node[data] (training) at (1,0) {Training set};
 \node[data] (fake) at (1,-1) {Fake set};
-\node[data,text width=1.6cm,text centered] (real-irt) at (2,0) {Real item params $d$};
-\node[data,text width=1.6cm,text centered] (fake-irt) at (2,-1) {Fake item params $\hat{d}$};
+\node[data,draw=red,text width=1.6cm,text centered] (real-irt) at (2,0) {Real item params $d$};
+\node[data,draw=red,text width=1.6cm,text centered] (fake-irt) at (2,-1) {Fake item params $\hat{d}$};
 \draw[->] (original) edge node[above=3mm] {sampling half users} (training);
 \draw[->] (training) edge node[right] {generator} (fake);
-\draw[<->] (real-irt) edge node[right] {RMSE} (fake-irt);
-\draw[->] (training) edge node[above] {IRT} (real-irt);
-\draw[->] (fake) edge node[above] {IRT} (fake-irt);
+\draw[red,<->] (real-irt) edge node[right] {RMSE} (fake-irt);
+\draw[red,->] (training) edge node[above] {IRT} (real-irt);
+\draw[red,->] (fake) edge node[above] {IRT} (fake-irt);
 \end{tikzpicture}
 
 # Membership inference: reidentification task
