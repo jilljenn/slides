@@ -26,7 +26,7 @@ header-includes:
 
 # Outline
 
-- Privacy talk
+- Privacy issues
 - Format of educational tabular data
 - Framework for assessing privacy leaks in data generation
     - Membership inference
@@ -80,7 +80,7 @@ However, we need a dynamic model
 
 # Intuition
 
-Knowledge parameters are safe to be shared
+Knowledge parameters should be safe to be shared
 
 User parameters should not be the true ones, but drawn from the same distribution (or blurred)
 
@@ -118,9 +118,9 @@ user 2487 got token ``apple'' correct \\ \bottomrule
 
 We want to generate data under this format, using existing data.
 
-# Item response theory for response pattern generation
+# Item response theory (IRT) for response pattern generation
 
-Well known model (Rasch, 1961)
+Well known model (Rasch, 1961) denoted by IRT
 
 Ex. $r_{ij}$ is 1 if user $i$ gets a positive outcome on action (item) $j$
 
@@ -156,7 +156,7 @@ Then we use a generative model to make a fake dataset
 To generate educational data, we can have two generative models:
 
 - Sequence generation: Predicting the next action ID
-- Response pattern generation: Predicting the outcome given user ID and action ID
+- Response pattern generation: Predicting the outcome given user parameter and action ID
 
 # Utility: fake dataset should be useful
 
@@ -197,7 +197,7 @@ It should not be easy to re-identify people / the fake dataset should not leak t
 
 $\downarrow$
 
-An attacker has to guess, from a broader population, who was in the training set (predict 1 if in training, 0 otherwise)
+An attacker has to guess, from the original and fake sets, who was in the training set (predict 1 if in training, 0 otherwise)
 
 \centering
 \begin{tikzpicture}[
@@ -226,13 +226,13 @@ An attacker has to guess, from a broader population, who was in the training set
 
 Membership inference seems innocuous, but could lead to privacy issues.
 
-For instance, if we want to publish a dataset of test results for students with \alert{special needs} using an anonymizing method, it shouldn't be possible to guess who was selected to generate the published dataset.
+For instance, if we want to publish a dataset of test results from students with \alert{special needs} using an anonymizing method, it shouldn't be possible to guess who was selected (= has special needs) in the training dataset.
 
 <!-- Should the system be able to adapt to people with special needs, without guessing the condition? -->
 
-More generally, any leak of information is potentially bad
+More generally, any leak of information is potentially bad.
 
-# Reidentification
+# Reidentification: attack model
 
 We use a heuristic based on Longest Common Subsequence (LCS) to reidentify
 
@@ -256,19 +256,21 @@ We use a heuristic based on Longest Common Subsequence (LCS) to reidentify
 LCS: $39 - 39 - 17$ with length 3
 \end{figure}
 
-For each user in the original dataset, this heuristic gives a \alert{matching score}, and we compute the Area under the ROC curve (AUC) associated with those scores for the training dataset classification task
+For each user pair in the original $\times$ fake datasets, we compute the LCS between them; it gives a \alert{matching score} which is the normalized maximum LCS on all fake users.
 
-Users with too few actions (in the information entropy sense) are excluded
+Original users with highest matching score are expected to be in the training set. To evaluate, we compute the Area under the ROC curve (AUC) associated with those scores.
+
+Users with too few actions (in the information entropy sense) are excluded.
 
 # Experiments
 
-Baseline: Drop $p \%$ is dropping $p \%$ of rows and renumbering the user IDs
+Baseline: "Drop $p \%$" is dropping $p \%$ of rows and renumbering the user IDs
 
-Sequence generation model: RNN or Markov chain (probability to jump from an action to another)
+Sequence generation model: recurrent neural network (RNN) or Markov chain (probability to jump from an action to another)
 
-Predicting the outcome: IRT
+Predicting the outcome: Rasch model (IRT)
 
-## Datasets
+## Datasets (publicly available)
 
 - the Duolingo dataset described above, 1M rows of English people learning French 
 - ASSISTments 2009 dataset (action types are mathematical skills that are accessed)
