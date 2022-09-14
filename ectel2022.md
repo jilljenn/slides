@@ -88,7 +88,7 @@ User parameters should not be the true ones, but drawn from the same distributio
 
 ![User ability parameters for an educational dataset](figures/gaussian.png){width=50%}
 
-# Example data
+# Example: the Duolingo SLAM dataset (Settles et al. 2018)
 
 ![](figures/duolingo0.png)
 
@@ -116,10 +116,7 @@ user 2487 got token ``apple'' correct \\ \bottomrule
 \arrayrulecolor{black}
 \end{table}
 
-To generate this, we can have two generative models:
-
-- Sequence generation: Predicting the next action ID
-- Response pattern generation: Predicting the outcome given user ID and action ID
+We want to generate data under this format, using existing data.
 
 # Item response theory for response pattern generation
 
@@ -155,6 +152,11 @@ Then we use a generative model to make a fake dataset
 \draw[->] (original) edge node[above=3mm] {sampling half users} (training);
 \draw[->] (training) edge node[right] {generator} (fake);
 \end{tikzpicture}
+
+To generate educational data, we can have two generative models:
+
+- Sequence generation: Predicting the next action ID
+- Response pattern generation: Predicting the outcome given user ID and action ID
 
 # Utility: fake dataset should be useful
 
@@ -266,13 +268,18 @@ Sequence generation model: RNN or Markov chain (probability to jump from an acti
 
 Predicting the outcome: IRT
 
+## Datasets
+
+- the Duolingo dataset described above, 1M rows of English people learning French 
+- ASSISTments 2009 dataset (action types are mathematical skills that are accessed)
+
 # Histogram of actions ($y$-axis: frequency)
 
 \centering
 
 ![](figures/hist-assist-markov.pdf)
 
-Actions
+Actions in the ASSISTments dataset
 
 # Quantitative results
 
@@ -282,6 +289,9 @@ Actions
 $\downarrow$ low distance between real and fake parameters, lower is better (high utility)
 
 $\leftarrow$ low reidentification score, lower is better (hard to identify)
+
+- Both Markov and RNN generate datasets with high utility and low reidentification score
+- RNN generates better sentences (Duolingo dataset), see the paper for examples
 
 <!---
 # Slided bag of events for SNDS
