@@ -26,7 +26,7 @@ header-includes:
 
 # Outline
 
-- Can pseudonymization guarantee privacy? (spoiler: no)
+- Privacy talk
 - Format of educational tabular data
 - Framework for assessing privacy leaks in data generation
     - Membership inference
