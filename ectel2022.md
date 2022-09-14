@@ -2,7 +2,7 @@
 % Jill-Jênn Vie; \alert{Tomas Rigaux}; Sein Minn
 % September 15, 2022
 ---
-institute: \includegraphics[width=2cm]{figures/soda.png}
+institute: \includegraphics[height=1cm]{figures/inria.png}
 colorlinks: true
 biblio-style: authoryear
 biblatexoptions: natbib
@@ -18,27 +18,48 @@ header-includes:
     - \def\logNotDt{\log(1 - \Dt(x))}
 ---
 
-# Intro
+# Goal
 
-- It is hard to get access to sensitive data
-- A dataset posted online may be archived forever
-- How about having instead access to:
-    - statistics
-    - conditional probabilities
-    - a fake dataset? (ex. for reproducibility)
+- It is hard to get access to educational data for research, considered too sensitive
+- Open data is great! But a dataset posted online may be archived forever (privacy issues)
+- How about having instead access to a fake dataset? (ex. for reproducibility of experiments)
 
 # Outline
 
-- Privacy
-- Metrics: utility and re-identification
-- Attack models
+- Can pseudonymization guarantee privacy? (spoiler: no)
+- Format of educational tabular data
+- Framework for assessing privacy leaks in data generation
     - Membership inference
-    - Heuristic attacker
+    - Metrics: utility and re-identification
+- We present: generative models, attack model, results
 
-# Striking facts
+# Removing names / pseudonymizing does not ensure privacy
 
-## People pseudonymize, but it's not enough
-@narayanan2008robust managed to de-anonymize a Netflix pseudonymized dataset of seen movies with IMDb
+Using the pseudonymized Netflix dataset of ratings given by users (identified by ID) on movies, @narayanan2008robust matched:
+
+- \alert{some public} ratings on IMDb of some user's public profile  
+- with \alert{all their private} ratings in the Netflix dataset
+
+revealing their political & sexual preferences or religious views.
+
+\vfill \scriptsize
+\fullcite{narayanan2008robust}
+
+# Few points are enough to uniquely identify users
+
+\normalsize
+4 timestamp-location points are needed to uniquely identify 95\% of individual trajectories in a dataset of 1.5M rows
+
+\scriptsize
+\fullcite{de2013unique}
+
+\vspace{1cm}
+
+\normalsize
+15 demographic points are enough to re-identify 99.96\% of Americans
+
+\scriptsize
+\fullcite{rocher2019estimating}
 
 <!---
 # Differentially private graphical models
@@ -59,13 +80,13 @@ However, we need a dynamic model
 
 # Intuition
 
-Knowledge embeddings are safe to be shared
+Knowledge parameters are safe to be shared
 
-User embeddings however should be drawn from distribution
+User parameters should not be the true ones, but drawn from the same distribution (or blurred)
 
 \centering
 
-![User embeddings for Assistments 2009](figures/gaussian.png){width=50%}
+![User ability parameters for an educational dataset](figures/gaussian.png){width=50%}
 
 # Example data
 
@@ -95,12 +116,14 @@ user 2487 got token ``apple'' correct \\ \bottomrule
 \arrayrulecolor{black}
 \end{table}
 
-So in our case there are two models:
+To generate this, we can have two generative models:
 
-- Sequence generation: Predicting the next action ID (Markov chain, RNN)
-- Response pattern generation: Predicting  the outcome given user ID and action ID (IRT, Bayesian networks)
+- Sequence generation: Predicting the next action ID
+- Response pattern generation: Predicting the outcome given user ID and action ID
 
 # Item response theory for response pattern generation
+
+Well known model (Rasch, 1961)
 
 Ex. $r_{ij}$ is 1 if user $i$ gets a positive outcome on action (item) $j$
 
@@ -114,6 +137,12 @@ where $\theta_i$ is ability of user $i$ and $d_j$ is difficulty of action $j$
 Trained using Newton's method: minimize log-loss $\mathcal{L} = \sum_{i, j} (1 - r_{ij}) \log (1 - p_{ij}) + r_{ij} \log p_{ij}$
 
 # Generation
+
+Generative model
+
+For example, Bayesian networks:
+
+![](figures/privbayes.png){width=50%}
 
 # Utility: fake dataset should be useful
 
@@ -201,7 +230,7 @@ Users with too few actions (in the information entropy sense) are excluded
 
 Baseline: Drop $p \%$ is dropping $p \%$ of rows and renumbering the user IDs
 
-Sequence generation model: RNN or Markov chain
+Sequence generation model: RNN or Markov chain (probability to jump from an action to another)
 
 Predicting the outcome: IRT
 
@@ -249,7 +278,7 @@ Extensions:
 - With more columns it is even easier to re-identify
 
 Let's share the data of people who do not exist!  
-Synthetic datasets for reproducibility
+Generating synthetic datasets for reproducing experiments
 
 \vspace{1cm}
 
