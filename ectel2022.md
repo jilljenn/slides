@@ -144,6 +144,20 @@ For example, Bayesian networks:
 
 ![](figures/privbayes.png){width=50%}
 
+\centering
+\begin{tikzpicture}[
+    xscale=3,
+    yscale=2,
+    data/.style={draw},
+    >=stealth
+]
+\node[data] (original) at (0,0) {Original};
+\node[data] (training) at (1,0) {Training set};
+\node[data] (fake) at (1,-1) {Fake set};
+\draw[->] (original) edge node[above=3mm] {sampling half users} (training);
+\draw[->] (training) edge node[right] {generator} (fake);
+\end{tikzpicture}
+
 # Utility: fake dataset should be useful
 
 \centering
@@ -155,6 +169,26 @@ Trained IRT model on original dataset should have parameters that are \alert{not
 
 \raggedright \footnotesize
 (where $d_j, \widehat{d_j}$ are item $j$'s inferred difficulty from the real and fake datasets)
+
+\normalsize
+\centering
+\begin{tikzpicture}[
+    xscale=3,
+    yscale=2,
+    data/.style={draw},
+    >=stealth
+]
+\node[data] (original) at (0,0) {Original};
+\node[data] (training) at (1,0) {Training set};
+\node[data] (fake) at (1,-1) {Fake set};
+\node[data,text width=1.6cm,text centered] (real-irt) at (2,0) {Real item params $d$};
+\node[data,text width=1.6cm,text centered] (fake-irt) at (2,-1) {Fake item params $\hat{d}$};
+\draw[->] (original) edge node[above=3mm] {sampling half users} (training);
+\draw[->] (training) edge node[right] {generator} (fake);
+\draw[<->] (real-irt) edge node[right] {RMSE} (fake-irt);
+\draw[->] (training) edge node[above] {IRT} (real-irt);
+\draw[->] (fake) edge node[above] {IRT} (fake-irt);
+\end{tikzpicture}
 
 # Membership inference: reidentification task
 
@@ -180,8 +214,8 @@ An attacker has to guess, from a broader population, who was in the training set
 \draw[->] (original) edge node[above=3mm] {sampling half users} (training);
 \draw[->] (training) edge node[right] {generator} (fake);
 \draw[<->] (real-irt) edge node[right] {RMSE} (fake-irt);
-\draw[->,dashed,bend right] (original) edge (training);
-\draw[->,dashed,bend left=60,text width=2cm,text centered] (fake) edge node[below left] {reidentify\\AUC} (training);
+\draw[red,->,dashed,bend right] (original) edge (training);
+\draw[red,->,dashed,bend left=60,text width=2cm,text centered] (fake) edge node[below left] {reidentify\\AUC} (training);
 \draw[->] (training) edge node[above] {IRT} (real-irt);
 \draw[->] (fake) edge node[above] {IRT} (fake-irt);
 \end{tikzpicture}
