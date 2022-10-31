@@ -2,6 +2,8 @@
 % JJV
 % Oct 7, 2022
 ---
+aspectratio: 169
+handout: true
 header-includes: |
   ```{=tex}
   \usepackage{tikz}
@@ -37,8 +39,11 @@ How to find the zeroes of a function?
 
 # Newton's method: find $x$ such that $f(x) = 0$ {.fragile}
 
-![](figures/newton.png)
+\centering
 
+![](figures/newton.png){width=70%}
+
+\raggedright
 $f: \R \to \R$ differentiable, $\not\exists x, f'(x) = 0$
 
 $$ x_{t + 1} = x_t - \frac{f(x_t)}{f'(x_t)} \qquad \parbox{0.45\textwidth}{\centering Quadratic convergence\\$\exists C > 0, |x_{t + 1} - \ell| \leq C |x_t - \ell|^2$}$$
@@ -59,7 +64,7 @@ $$\x_{t + 1} = \x_t - \underbrace{g''(\x_t)^{-1}}_{\in \mathbf{R}^{n \times n},~
 
 \centering
 
-![](figures/sgd.jpg){width=70%}
+![](figures/sgd.jpg){width=50%}
 
 $\x_{t + 1} = \x_t - \gamma \nabla_{\x} \L(\x_t)$
 
@@ -91,9 +96,10 @@ for _ in range(n_epochs):
 
 # How to compute gradients automatically?
 
-\centering\tiny
+\centering\footnotesize
+
 ```python
->>> from autograd import elementwise_grad as egrad  # for functions that vectorize over inputs
+>>> from autograd import elementwise_grad as egrad  # vectorize over inputs
 >>> import matplotlib.pyplot as plt
 >>> x = np.linspace(-7, 7, 200)
 >>> plt.plot(x, tanh(x),
@@ -105,7 +111,9 @@ for _ in range(n_epochs):
 ...          x, egrad(egrad(egrad(egrad(egrad(egrad(tanh))))))(x))  # sixth  derivative
 >>> plt.show()
 ```
-\begin{center}\includegraphics[width=0.6\linewidth]{figures/tanh.png}\end{center}
+\vspace{-5mm}\begin{center}
+\includegraphics[width=0.4\linewidth]{figures/tanh.png}
+\end{center}
 
 # Existing methods and their limitations
 
@@ -228,7 +236,7 @@ Let us note the adjoint $\bar{f} \triangleq \frac{d\L}{df}$.
 
 # More interesting link functions
 
-\footnotesize
+\centering
 \begin{tabular}{ccc} \toprule
 & Binary & Multiclass\\ \midrule
 $f$ & $\softplus : x \mapsto \log (1 + \exp(x))$ & $\logsumexp^+ : \x \mapsto \log(1 + \sum_c \exp(x_c))$\\

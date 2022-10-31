@@ -24,7 +24,8 @@ deeprec.md: deeprec-master.md
 	# --bibliography=biblio.bib --biblatex
 
 %.tex: %.md
-	time pandoc -s --bibliography=biblio.bib --biblatex --verbose $< -t beamer -o $@
+	time pandoc -s --verbose $< -t beamer -o $@
+	#  --bibliography=biblio.bib --biblatex
 	#  --filter pandoc-minted.py
 	# time pandoc -s --filter pandoc-minted.py --verbose $< -t beamer -o $@
 	pdflatex -shell-escape $@ 
