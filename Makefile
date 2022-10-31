@@ -24,11 +24,12 @@ deeprec.md: deeprec-master.md
 	# --bibliography=biblio.bib --biblatex
 
 %.tex: %.md
-	time pandoc -s --filter pandoc-minted.py --bibliography=biblio.bib --biblatex --verbose $< -t beamer -o $@
+	time pandoc -s --bibliography=biblio.bib --biblatex --verbose $< -t beamer -o $@
+	#  --filter pandoc-minted.py
 	# time pandoc -s --filter pandoc-minted.py --verbose $< -t beamer -o $@
-	lualatex -shell-escape $@ 
+	pdflatex -shell-escape $@ 
 	biber ${@:.tex=}
-	lualatex -shell-escape $@
+	pdflatex -shell-escape $@
 	# evince ${@:.tex=.pdf}
 
 %.pdf: %.tex
