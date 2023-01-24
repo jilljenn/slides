@@ -8,7 +8,7 @@ section-titles: false
 header-includes:
     - \usepackage{bm}
     - \usepackage{multicol,booktabs}
-    - \usepackage{algorithm,algpseudocode}
+    - \usepackage{algorithm,algpseudocode,algorithmicx}
     - \DeclareMathOperator\logit{logit}
     - \def\Lb{\mathcal{L}_b}
     - \def\ReLU{\textnormal{ReLU}}
@@ -138,7 +138,7 @@ Learn $U$ and $V$ to \alert{minimize} $ {||R - UV^T||}_2^2 + \lambda \cdot \text
 \pause
 
 \begin{block}{Predict: Will user Satoshi like item Naruto?}
-Just compute $\alert{U_\textnormal{Satoshi}} \cdot \alert{V_\textnormal{Naruto}}$ and you will know!
+Just compute $\alert{U_{\textnormal{Satoshi}}} \cdot \alert{V_{\textnormal{Naruto}}}$ and you will know!
 \end{block}
 
 ## Alternating Least Squares (Zhou et al., 2008)
@@ -280,13 +280,13 @@ $$ y = \theta_i + e_j $$
 
 ### Multidimensional IRT
 
-$$ y = \theta_i + e_j + \langle \bm{v_\textnormal{user $i$}}, \bm{v_\textnormal{item $j$}} \rangle $$
+$$ y = \theta_i + e_j + \langle \bm{v_{\textnormal{user $i$}}}, \bm{v_{\textnormal{item $j$}}} \rangle $$
 
 \pause
 
 ### With side information
 
-$$ y = \theta_i + e_j + \langle \bm{v_\textnormal{user $i$}}, \bm{v_\textnormal{item $j$}} \rangle + \langle \bm{v_\textnormal{user $i$}}, \alert{\bm{v_\textnormal{mobile}}} \rangle + \langle \bm{v_\textnormal{item $j$}}, \alert{\bm{v_\textnormal{mobile}}} \rangle $$
+$$ y = \theta_i + e_j + \langle \bm{v_{\textnormal{user $i$}}}, \bm{v_{\textnormal{item $j$}}} \rangle + \langle \bm{v_{\textnormal{user $i$}}}, \alert{\bm{v_{\textnormal{mobile}}}} \rangle + \langle \bm{v_{\textnormal{item $j$}}}, \alert{\bm{v_{\textnormal{mobile}}}} \rangle $$
 
 ## Encoding the problem using sparse features
 
