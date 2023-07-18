@@ -2,6 +2,7 @@
 % Jill-Jênn Vie
 % July 4, 2023
 ---
+aspectratio: 169
 institute: \includegraphics[height=1cm]{figures/soda.png}
 header-includes: |
   ```{=tex}
@@ -74,9 +75,13 @@ Uplift: the incremental profit brought by treatment conditioned on features of e
 
 $$u(x) = \E [Y^1|X = x] - \E [Y^0|X = x] $$
 
-\textcolor{gray}{Yamane, I., Yger, F., Atif, J., \& Sugiyama, M. Uplift Modeling from Separate Labels. NeurIPS 2018.}
+\small
 
-\textcolor{gray}{Hsieh, Y. G., Kasiviswanathan, S., \& Kveton, B. Uplifting bandits. NeurIPS 2022.}
+\textcolor{gray}{Yamane, Yger, Atif \& Sugiyama (NeurIPS 2018). Uplift Modeling from Separate Labels.}
+
+\textcolor{gray}{Hsieh, Kasiviswanathan \& Kveton (NeurIPS 2022). Uplifting bandits.}
+
+\normalsize
 
 Deciding whether treatment or not given $x_i$: \alert{policy}  
 (seen in dynamic treatment regime)
@@ -132,10 +137,42 @@ Find $\pi(a|s)$ that optimizes $\E_\pi [G_t | S_t = s]$
 
 Bandits are the equivalent for episodes of length 1
 
+# On-policy vs. off-policy
+
+Problem: old episodes were collected from an older policy, so does it makes sense?
+
+- off-policy: can improve the policy with old samples
+- on-policy: each time the policy changes, we need to generate new samples
+
+![](figures/on-off-policy.png)
+
+# $Q$-learning is an off-policy algorithm
+
+- For each episode:
+	- For each step of episode:
+		- Choose action $a$ given $s$ according to $Q$, observe $r, s'$
+		- $Q(s, a) \gets Q(s, a) + \alpha(r + \gamma \max_{a'} Q(s', a') - Q(s, a))$
+
+## Variants
+
+- $\E[\max(X_1, X_2)] \geq \max(\E X_1, \E X_2)$ $\to$ double $Q$-learning: alleviate the positive bias from overestimation by having one network for selecting action, one network for evaluating value (average reward)
+
+\small
+
+\textcolor{gray}{Hasselt (NeurIPS 2010). Double $Q$-Learning.}\bigskip
+
+\normalsize
+
+- Conservative $Q$-learning: lower bound on the $Q$-function
+
+\small
+
+\textcolor{gray}{Kumar, Zhou, Tucker \& Levine (NeurIPS 2020). Conservative $Q$-Learning for Offline Reinforcement Learning.}
+
 # Dynamic programming (1952)
 
 :::::: {.columns}
-::: {.column}
+::: {.column width=40%}
 ![](figures/bellman.jpg)
 
 \centering
@@ -150,6 +187,33 @@ Invented dynamic programming before programming was invented (Autocode, 1953)
 An optimal policy has the property that whatever the initial state and initial decision are, the remaining decisions must constitute an optimal policy with regard to the state resulting from the first decision.
 :::
 ::::::
+
+# Crowdsourcing
+
+Learning from human (noisy) labels (e.g. reCAPTCHA, Duolingo) based on graphical models.
+
+\vfill \small
+
+\textcolor{gray}{Raykar, Yu, Zhao, Valadez, Florin, Bogoni, \& Moy (JMLR 2010).  
+Learning from crowds.}
+
+Ex. \textcolor{gray}{Bachrach, Graepel, Minka \& Guiver (ICML 2012). How to grade a test without knowing the answers---A Bayesian graphical model for adaptive crowdsourcing and aptitude testing.}
+
+# Reinforcement Learning from Human Feedback
+
+1. Collect demonstration data, and train a supervised policy $\pi_0(y|x)$ (based on GPT-3)
+2. Collect comparison data, train a reward model  
+(Elo rating, or BPR; "only" 50k annotations)
+
+$$ \textnormal{loss}(\alert\theta) = -\E_{(x, y_w, y_\ell) \sim D} \log \underbrace{\sigma(r_{\alert\theta}(x, y_k) - r_{\alert\theta}(x, y_\ell))}_{\Pr(\textnormal{output } y_w \textnormal{ is preferred to } y_\ell)} $$
+
+3. Optimize a policy against the reward model using PPO.
+
+$$ \textnormal{objective}(\alert\phi) = \E_{(x, y) \sim \pi_{\alert\phi}} r_\theta(x, y) - \beta \textnormal{KL}(\pi_{\alert\phi}, \pi_0) $$
+
+\small
+
+\textcolor{gray}{Ouyang, Wu, Jiang, Almeida, Wainwright, Mishkin, … \& Lowe (NeurIPS 2022). Training language models to follow instructions with human feedback.}
 
 # Applications
 
