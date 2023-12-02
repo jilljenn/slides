@@ -73,7 +73,7 @@ Experiments on 15 real-world public datasets
 - Continuous variables: Gaussian diffusion model
 - Categorical variables: Multinomial diffusion model
 
-# What are diffusion models? (Check Lilian Weng's post!)
+# What are diffusion models? (Check [Lilian Weng's post](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/)!)
 
 \centering
 

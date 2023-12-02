@@ -14,7 +14,7 @@ header-includes:
     - \usepackage{algorithm,algpseudocode}
     - \usepackage{fontspec}
     - \usepackage{xeCJK}
-    - \setCJKmainfont{Songti SC}
+    - \setCJKmainfont{Noto Sans CJK SC}
     - \usepackage{unicode-math}
     - \usepackage{bm}
     - \usepackage[italic]{mathastext}
@@ -279,14 +279,14 @@ $$ y = \theta_i + e_j $$
 
 ### Multidimensional IRT (similar to collaborative filtering)
 
-$$ y = \theta_i + e_j + \langle \bm{v_\textnormal{user $i$}}, \bm{v_\textnormal{item $j$}} \rangle $$
+$$ y = \theta_i + e_j + \langle \bm{v_{\textnormal{user $i$}}}, \bm{v_{\textnormal{item $j$}}} \rangle $$
 
 \pause
 
 ### With side information
 
 \small \vspace{-3mm}
-$$ y = \theta_i + e_j + \alert{w_\textnormal{mobile}} + \langle \bm{v_\textnormal{user $i$}}, \bm{v_\textnormal{item $j$}} \rangle + \langle \bm{v_\textnormal{user $i$}}, \alert{\bm{v_\textnormal{mobile}}} \rangle + \langle \bm{v_\textnormal{item $j$}}, \alert{\bm{v_\textnormal{mobile}}} \rangle $$
+$$ y = \theta_i + e_j + \alert{w_{\textnormal{mobile}}} + \langle \bm{v_{\textnormal{user $i$}}}, \bm{v_{\textnormal{item $j$}}} \rangle + \langle \bm{v_{\textnormal{user $i$}}}, \alert{\bm{v_{\textnormal{mobile}}}} \rangle + \langle \bm{v_{\textnormal{item $j$}}}, \alert{\bm{v_{\textnormal{mobile}}}} \rangle $$
 
 ## Graphically: logistic regression
 
@@ -312,7 +312,7 @@ Each \textcolor{blue!80}{user}, \textcolor{orange}{item}, \textcolor{green!50!bl
 \end{column}
 \end{columns}\vspace{-2mm}
 
-\hfill $$\logit p(\bm{x}) = \mu + \underbrace{\sum_{k = 1}^N \alert{w_k} x_k}_\textnormal{logistic regression} + \underbrace{\sum_{1 \leq k < l \leq N} x_k x_l \langle \alert{\bm{v_k}}, \alert{\bm{v_l}} \rangle}_\textnormal{pairwise relationships}$$
+\hfill $$\logit p(\bm{x}) = \mu + \underbrace{\sum_{k = 1}^N \alert{w_k} x_k}_{\textnormal{logistic regression}} + \underbrace{\sum_{1 \leq k < l \leq N} x_k x_l \langle \alert{\bm{v_k}}, \alert{\bm{v_l}} \rangle}_{\textnormal{pairwise relationships}}$$
 
 <!-- Multidimensional item response theory: $\logit p(\bm{x}) = \langle \bm{u_i}, \bm{v_j} \rangle + e_j$  
 is a particular case. -->
