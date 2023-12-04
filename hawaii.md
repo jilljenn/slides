@@ -1,5 +1,5 @@
 % Knowledge Tracing Machines:\newline Factorization Machines for Knowledge Tracing
-% Jill-Jênn Vie \and Hisashi Kashima
+% Jill-Jênn Vie; Hisashi Kashima
 % The University of Tokyo, February 7, 2019\bigskip\newline \url{https://arxiv.org/abs/1811.03388}
 ---
 theme: Frankfurt
@@ -210,7 +210,7 @@ Predict the performance of new users on existing items
 Learn parameters of questions from historical data \hfill \emph{e.g., difficulty}  
 Measure parameters of new students \hfill \emph{e.g., expertise}  
 
-## Existing work
+## Existing work {.fragile}
 
 \footnotesize
 \begin{tabular}{cccc} \toprule
@@ -225,7 +225,7 @@ Bayesian Knowledge Tracing & \multirow{2}{*}{Hidden Markov Model} & \multirow{2}
 \only<4->{(Wilson et al., 2016) \\ \bottomrule}
 \end{tabular}
 
-\only<5>{$$ \underbrace{\textnormal{PFA}}_\textnormal{LogReg} \! \leq \underbrace{\textnormal{DKT}}_\textnormal{LSTM} \leq \! \underbrace{\textnormal{IRT}}_\textnormal{LogReg} \! \alert{\leq \underbrace{\textnormal{KTM}}_\textnormal{FM}} $$}
+\only<5>{$$\underbrace{\textnormal{PFA}}_{\textnormal{LogReg}} \! \leq \underbrace{\textnormal{DKT}}_{\textnormal{LSTM}} \leq \! \underbrace{\textnormal{IRT}}_{\textnormal{LogReg}} \! \alert{\leq \underbrace{\textnormal{KTM}}_{\textnormal{FM}}}$$}
 
 <!-- \alert{Recurrent neural networks} are powerful because they learn a more complex function that tracks the evolution of the latent state
 
@@ -391,14 +391,14 @@ $$ y = \theta_i + e_j $$
 
 ### Multidimensional IRT (similar to collaborative filtering)
 
-$$ y = \theta_i + e_j + \langle \bm{v_\textnormal{user $i$}}, \bm{v_\textnormal{item $j$}} \rangle $$
+$$y = \theta_i + e_j + \langle \bm{v_{\textnormal{user $i$}}}, \bm{v_{\textnormal{item $j$}}} \rangle $$
 
 \pause
 
 ### With side information
 
 \small \vspace{-3mm}
-$$ y = \theta_i + e_j + \alert{w_\textnormal{mobile}} + \langle \bm{v_\textnormal{user $i$}}, \bm{v_\textnormal{item $j$}} \rangle + \langle \bm{v_\textnormal{user $i$}}, \alert{\bm{v_\textnormal{mobile}}} \rangle + \langle \bm{v_\textnormal{item $j$}}, \alert{\bm{v_\textnormal{mobile}}} \rangle $$
+$$y = \theta_i + e_j + \alert{w_{\textnormal{mobile}}} + \langle \bm{v_{\textnormal{user $i$}}}, \bm{v_{\textnormal{item $j$}}} \rangle + \langle \bm{v_{\textnormal{user $i$}}}, \alert{\bm{v_{\textnormal{mobile}}}} \rangle + \langle \bm{v_{\textnormal{item $j$}}}, \alert{\bm{v_{\textnormal{mobile}}}} \rangle $$
 
 ## Graphically: logistic regression
 
@@ -424,7 +424,7 @@ Each \textcolor{blue!80}{user}, \textcolor{orange}{item}, \textcolor{green!50!bl
 \end{column}
 \end{columns}\vspace{-2mm}
 
-\hfill $\logit p(\bm{x}) = \mu + \underbrace{\sum_{k = 1}^N \alert{w_k} x_k}_\textnormal{logistic regression} + \underbrace{\sum_{1 \leq k < l \leq N} x_k x_l \langle \alert{\bm{v_k}}, \alert{\bm{v_l}} \rangle}_\textnormal{pairwise relationships}$
+\hfill $\logit p(\bm{x}) = \mu + \underbrace{\sum_{k = 1}^N \alert{w_k} x_k}_{\textnormal{logistic regression}} + \underbrace{\sum_{1 \leq k < l \leq N} x_k x_l \langle \alert{\bm{v_k}}, \alert{\bm{v_l}} \rangle}_{\textnormal{pairwise relationships}}$
 
 <!-- Multidimensional item response theory: $\logit p(\bm{x}) = \langle \bm{u_i}, \bm{v_j} \rangle + e_j$  
 is a particular case. -->
