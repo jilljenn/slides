@@ -14,6 +14,12 @@ shanghai.pdf: shanghai.md
 	xelatex shanghai
 	open $@
 
+icce2023.tex: icce2023.md
+	time pandoc -s --filter pandoc-minted.py --bibliography=biblio.bib --biblatex $< -t beamer -o $@
+	pdflatex -shell-escape $@
+	biber ${@:.tex=}
+	pdflatex -shell-escape $@
+
 deeprec.md: deeprec-master.md
 	# ./prepare.py $< --handout > $@
 	./prepare.py $< > $@
