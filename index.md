@@ -1,5 +1,8 @@
 See all slides on the [repo](https://github.com/jilljenn/slides/).
 
+* TOC
+{:toc}
+
 # Knowledge Tracing Machines
 
 - [aaai](aaai)
@@ -11,6 +14,17 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [kyodai](kyodai)
 - [shanghai](shanghai)
 - [tuto](tuto)
+
+# Reading group
+
+- [eiah2023](eiah2023) about DKT and MAB for ITS
+
+## ICML 2023
+
+- [fare](fare)
+- [fair](fair) ICML 2013
+- [tabddpm](tabddpm)
+- [diffts](diffts)
 
 # Mangaki, anime-manga recommender system
 
@@ -27,9 +41,39 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [prologin2019](prologin2019)
 - [recsysfr2-hnkansai](recsysfr2-hnkansai)
 - [x](x)
+- [creusot](creusot)
+- [nuit-ia](nuit-ia)
 
 # Misc
 
 - [genma-bsi](genma-bsi)
 - [vfm-light](vfm-light)
+- [vfm](vfm)
+- [vfm-kyodai](vfm-kyodai)
 - [soda](soda)
+- [ectel2022](ectel2022)
+- [icce2023](icce2023)
+- [30min](30min)
+- [pfia](pfia)
+- [relia](relia)
+- [coding](coding)
+- [heka](heka)
+- [iaformation](iaformation)
+- [jj](jj)
+- [jsi2023](jsi2023)
+- [coding](coding)
+
+# Cours
+
+## Deep Learning
+
+- [autodiff](autodiff)
+- [fit](fit)
+- [embeddings](embeddings)
+- [ode](ode)
+
+## SWERC
+
+- [swerc-intro](swerc-intro)
+- [parcours](parcours)
+- [segment-tree](segment-tree)

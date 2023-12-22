@@ -78,7 +78,7 @@ User embeddings however should be drawn from distribution
 %\caption{Example of minimal tabular dataset.}
 \label{example-dataset}
 \centering
-\resizebox{\textwidth}{!}{%
+\resizebox{\textwidth}{!}{
 \begin{tabular}{ccc} \toprule
 user ID & action ID & outcome \\ \midrule
 2487 & 384 & 1 \\
