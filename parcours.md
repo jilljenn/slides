@@ -2,6 +2,7 @@
 % Christoph Dürr; Jill-Jênn Vie
 % SU November Camp\newline 2 novembre 2021
 ---
+aspectratio: 169
 theme: metropolis
 mainfont: EBGaramond12-Regular.otf
 mainfontoptions:
@@ -58,7 +59,7 @@ def dfs_recursive(graph, node, seen):
 
 # Depth-first search, iterative {.fragile}
 
-\footnotesize
+\scriptsize
 
 ```
 dfs(node)
@@ -125,6 +126,8 @@ bfs(node)
 ```
 
 # Le graphe de Paris
+
+\centering
 
 ![Paris](figures/paris.png)\ 
 

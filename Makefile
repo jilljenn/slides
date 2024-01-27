@@ -3,8 +3,8 @@ all: aimangaki-light.pdf animeexpo.pdf balse.pdf dauphine.pdf dauphine-recent.pd
 	 iswag.pdf manpu.pdf mcjp.pdf meetup.pdf mfglabs.pdf ml4anime.pdf picopicocafe.pdf \
 	 recsysfr.pdf recsysfr2-hnkansai.pdf thiers.pdf student-demo-cup.pdf vfm-handout.pdf vfm.pdf
 
-pages/%.html: %.md
-	pandoc --bibliography=biblio.bib $< -o $@
+%.html: %.md
+	pandoc -s --mathjax --bibliography=biblio.bib $< -o $@
 
 shanghai.pdf: shanghai.md
 	time pandoc -s --bibliography=biblio.bib --biblatex $< -t beamer -o shanghai.tex
@@ -13,6 +13,10 @@ shanghai.pdf: shanghai.md
 	xelatex shanghai
 	xelatex shanghai
 	open $@
+
+parcours.tex: parcours.md
+	time pandoc -s --filter pandoc-minted.py $< -t beamer -o $@
+	lualatex -shell-escape $@
 
 icce2023.tex: icce2023.md
 	time pandoc -s --filter pandoc-minted.py --bibliography=biblio.bib --biblatex $< -t beamer -o $@
