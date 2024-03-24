@@ -2,7 +2,8 @@
 % JJ Vie
 % November 22, 2019
 ---
-handout: false
+aspectratio: 169
+handout: true
 theme: Frankfurt
 section-titles: false
 header-includes:
@@ -113,12 +114,14 @@ So players may have an optimistic strategy to plan their matches
 
 ## Recommender systems
 
+\centering
+
 \begin{tabular}{ccccc}
 & \includegraphics[height=2.5cm]{figures/1.jpg} & \includegraphics[height=2.5cm]{figures/2.jpg} & \includegraphics[height=2.5cm]{figures/3.jpg} & \includegraphics[height=2.5cm]{figures/4.jpg}\\
-Sacha & \only<1>{?}\only<2>{\alert{3}} & 5 & 2 & \only<1>{?}\only<2>{\alert{2}}\\
-Ondine & 4 & 1 & \only<1>{?}\only<2>{\alert{4}} & 5\\
+Sacha & \only<2>{\alert{3}} & 5 & 2 & \only<2>{\alert{2}}\\
+Ondine & 4 & 1 & \only<2>{\alert{4}} & 5\\
 Pierre & 3 & 3 & 1 & 4\\
-Joëlle & 5 & \only<1>{?}\only<2>{\alert{2}} & 2 & \only<1>{?}\only<2>{\alert{5}}
+Joëlle & 5 & \only<2>{\alert{2}} & 2 & \only<2>{\alert{5}}
 \end{tabular}
 
 
@@ -139,21 +142,23 @@ Optimize likelihood
 EM algorithm via MCMC: sample $U$, optimize $V$ (Cai, 2010)  
 Slow, $d \leq 6$
 
-
 ## Example
 
 \centering
 
-![](figures/embedding1.png){width=60%}
+![](figures/embedding1.png){height=7.5cm}
 
 ## Identify strong points
 
-![](figures/embedding2.png)
+\centering
+
+![](figures/embedding2.png){height=7.5cm}
 
 ## And weak points
 
-![](figures/embedding3.png)
+\centering
 
+![](figures/embedding3.png){height=7.5cm}
 
 ## Regression with sparse features (very elegant!)
 
@@ -183,7 +188,7 @@ The Blondel Trilogy
 ## Scaling to high dimension
 
 $\theta_{t + 1} = \theta_t - \gamma \nabla_\theta \mathcal{L} \Rightarrow$ Replace $\nabla_\theta \mathcal{L}$ with an unbiased estimate $\tilde\nabla_\theta \mathcal{L}$ \centering
-\includegraphics[width=0.98\linewidth]{figures/cfirt.pdf}
+\includegraphics[width=0.7\linewidth]{figures/cfirt.pdf}
 
 
 ## In an ideal world (full answers, static humans)
@@ -232,6 +237,8 @@ $\widehat{r_{ij_T}} = \sigma(\langle \bm{u}_T, \bm{v}_{j_T} \rangle)$
 
 
 ## Deep knowledge tracing
+
+\centering
 
 ![](figures/dkt2.pdf)
 

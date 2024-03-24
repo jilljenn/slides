@@ -26,7 +26,7 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [tabddpm](tabddpm)
 - [diffts](diffts)
 
-# Mangaki, anime-manga recommender system
+# Recommender systems (Mangaki)
 
 - [aima-intro](aima-intro)
 - [aimangaki-light](aimangaki-light)
@@ -43,6 +43,26 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [x](x)
 - [creusot](creusot)
 - [nuit-ia](nuit-ia)
+- [soda](soda)
+
+# Reinforcement learning
+
+- [jsi2023](jsi2023)
+- [sodarl](sodarl)
+- [wasl2024](wasl2024)
+
+# Synthetic data generation
+
+- [ectel2022](ectel2022)
+- [heka](heka)
+- [pfia](pfia)
+- [relia](relia)
+
+# Internal seminars
+
+- [30min](30min)
+- [jj](jj)
+
 
 # Misc
 
@@ -50,18 +70,9 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [vfm-light](vfm-light)
 - [vfm](vfm)
 - [vfm-kyodai](vfm-kyodai)
-- [soda](soda)
-- [ectel2022](ectel2022)
 - [icce2023](icce2023)
-- [30min](30min)
-- [pfia](pfia)
-- [relia](relia)
-- [coding](coding)
-- [heka](heka)
+- [coding](coding) NewInML workshop @ ICML 2022
 - [iaformation](iaformation)
-- [jj](jj)
-- [jsi2023](jsi2023)
-- [coding](coding)
 
 # Cours
 
