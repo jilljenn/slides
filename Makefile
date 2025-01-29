@@ -14,6 +14,12 @@ shanghai.pdf: shanghai.md
 	xelatex shanghai
 	open $@
 
+kiss.tex: kiss.md kiss.bbl
+	time pandoc -s --lua-filter subtitle3.lua --bibliography=biblio.bib --biblatex $< -t beamer -o $@
+	pdflatex $@
+	biber ${@:.tex=}
+	pdflatex $@
+	
 parcours.tex: parcours.md
 	time pandoc -s --filter pandoc-minted.py $< -t beamer -o $@
 	lualatex -shell-escape $@

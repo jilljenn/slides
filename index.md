@@ -50,6 +50,7 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 - [jsi2023](jsi2023)
 - [sodarl](sodarl)
 - [wasl2024](wasl2024)
+- [kiss](kiss)
 
 # Synthetic data generation
 
@@ -62,7 +63,6 @@ See all slides on the [repo](https://github.com/jilljenn/slides/).
 
 - [30min](30min)
 - [jj](jj)
-
 
 # Misc
 
