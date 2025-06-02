@@ -1,4 +1,4 @@
-% Competitive Programming\newline ICPC SWERC Training
+% Competitive Programming\newline INF471S: ICPC SWERC Training
 % Jill-Jênn Vie
 % First class
 ---
