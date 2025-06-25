@@ -1,44 +1,49 @@
 % Diversified recommendations of cultural activities with personalized determinantal point processes
 % Carole Ibrahim; Hiba Bederina; Daniel Cuesta;\newline Laurent Montier; Cyrille Delabre; Jill-Jênn Vie
-% April 15, 2025
+% Soda kick-off seminar, June 3, 2025
 ---
 aspectratio: 169
 colorlinks: true
 institute: \includegraphics[height=1.2cm]{figures/passculture.jpg} \quad \includegraphics[height=1.2cm]{figures/inria.png}
-header-includes:
-  - \def\E{\mathbb{E}}
-  - \usepackage{booktabs}
-  - \def\hfilll{\hspace{0pt plus 1 filll}}
+header-includes: |
+  ```{=tex}
+  \def\E{\mathbb{E}}
+  \usepackage{booktabs}
+  \def\hfilll{\hspace{0pt plus 1 filll}}
+  ```
 ---
 
-# Most RecSys nowadays
+# Pass Culture
 
-Train on existing data
+Since 2019, the French government awards a fixed credit to 3 million young individuals (aged 15-20) to spend on $\sim$ 1 million possible activities (books, cinema, opera, etc.).
 
-Select personalized top $K$ offers (according to relevance, click-through rate)
+We want to:
 
-Show them to you
+- increase youth participation in cultural activities
+- broaden their cultural horizons: make them discover new things
 
-## Collaboration with Pass Culture \& Kyoto U
+How to model it? (1.5 year project)
 
-Encourage to discover new things
-
-# Reward metric (key performance indicator) of Pass Culture
-
-Diversification points obtained for each new category / subcategory / genre / location / type (a bit like set cover; achievement score); those are not visible to the user
-
-![](figures/culture-div.png)
-
-# Existing algorithm
+# Industrial recommender systems are vector databases
 
 Among the million of offers, only 1500 are selected for ranking
 
-Approximate nearest neighbor according to a query vector
+Vector database: approximate nearest neighbor according to a query vector
 
 ![](figures/culture-post.png)
 
 - One model for retrieval (two-tower model $\sim$ neural collaborative filtering)
-- Another one for ranking (LightGBM)
+- Another one for top $K$ ranking (LightGBM; I also tried skrub)
+
+# Reward metrics (key performance indicators) of Pass Culture
+
+Relevance: click-through rate (booking rate)
+
+Diversification points obtained for each new category / genre / location (increase in cultural diversity); those scores are not visible to the user, but for stakeholders
+
+![](figures/culture-div.png)
+
+It somehow has limitations
 
 # 
 
@@ -67,9 +72,40 @@ Approximate nearest neighbor according to a query vector
 
 ![](figures/sartre2.png)
 
-# Determinantal point process (DPP) sampling
+# Quality-diversity decomposition for recommendation
 
-![](figures/dpp.png)\ 
+- $q_i > 0$ is a possibly personalized measure of \alert{quality} of item $i$ for the current user
+- $\phi_i$ is a unit semantic embedding of item $i$, $||\phi_i|| = 1$, used for \alert{diversity} sampling
+
+Similarity matrix $K = X X^T$ and $K_{ij} = x_i^T x_j$ can be decomposed as $q_i \phi_i^T \phi_j q_j$
+
+## Metrics of a set $S$ for a user
+
+:::::: {.columns}
+::: {.column width=50%}
+1. Relevance, i.e. click-through rate
+
+$$ \frac1{|S|} \sum_{i \in S} q_i$$
+
+2. Volume formed by set $S$
+
+$$Vol(S)$$
+
+3. Diversification is the increase in diversity
+
+$$\Delta \simeq Vol(H \cup S) - Vol(H)$$
+
+where $H$ is history of items for a given user.
+:::
+::: {.column width=50%}
+## Our sampling objective
+
+Sampling a set $S$ proportional to $\det K_S$
+
+$$\log \det K_S = \underbrace{\sum_{i \in S} \log q_i}_{\textnormal{quality}} + 2 \underbrace{\log Vol(S)}_{\textnormal{diversity}}$$
+
+:::
+::::::
 
 # DPP
 
@@ -80,9 +116,9 @@ $P$ is a \alert{determinantal point process} if sample $Y$ verifies:
 $$ \forall A \subset \{1, \ldots, n\}, \quad P(A \subseteq Y) \propto det(K_A) = Vol(\{x_i\}_{i \in A})^2 $$
 where $K_A$ has subset $A$ of rows and columns.
 
-There is a $O(nk^3)$ algorithm for sampling $k$ items among $n$, at the cost of knowing its eigenvalues in $O(n^3)$.
+There is a $O(nk^3)$ algorithm for sampling $k$ items among $n$, at the cost of knowing its eigenvalues in $O(n^3)$, or $O(nd^2)$ for the linear kernel.
 
-## Example
+## Example for sampling 3 points among 4
 
 \begin{columns}
 \begin{column}{0.5\textwidth}
@@ -103,138 +139,56 @@ $A = \{1, 2, 4\}$ will be included with probability proportional to
 \end{column}
 \end{columns}
 
-# Quality-diversity decomposition
-
-$K = X X^T$ and $K_{ij} = x_i^T x_j$ can be decomposed as $q_i \phi_i^T \phi_j q_j$ where $||\phi_i|| = 1$
-
-- Decomposing into quality $q_i$ and diversity $\phi_i$ (semantic embedding)
-- Then quality can be our relevance
-- Diversity to select a diverse batch of recommendations
-
-# Metrics
-
-:::::: {.columns}
-::: {.column width=50%}
-1. Relevance
-
-$$ q_i > 0 \quad \Pr(C = 1) \quad u^T v$$
-
-2. Diversity inter-batch (history $H$ vs. $S$)
-
-$$\min \sum K(H, S)$$
-
-3. Diversity intra-batch ($S$ vs. $S$)
-
-$$\max \det K(S, S)$$
-
-Using DPP: sampling $S$ proportional to $\det K(S, S)$\bigskip
-:::
-::: {.column width=50%}
-\centering
-
-![](figures/nystrom.jpg){width=45%}
-
-\raggedright
-
-## Objectives 2 + 3 related to DPP
-
-Sampling a set $A = H \cup S$ prop to $\det K(A, A)$ conditioned on the fact that it already contains $H$ (conditioned DPP)
-
-## Reducing complexity is related to Nyström
-
-Finding representative points $B$ that help predict the rest (i.e. covariance) on $A \setminus B$
-:::
-::::::
-
-# Toy dataset to illustrate the importance of all metrics
-
-\centering
-
-![](figures/pass-toy.png)
-
 # Compromise quality-diversity
 
 :::::: {.columns}
 ::: {.column width=50%}
-## SVD top $K$
+## SVD naive top $K$
 
 ![](figures/pass-svd.png)
+
+Several Star Wars movies in the set
 :::
 ::: {.column width=50%}
 ## $k$-DPP
 
 ![](figures/pass-dpp.png)
 :::
-::::::
+::::::  
 
-# Compromise quality-diversity
+# Evaluation
 
-:::::: {.columns}
-::: {.column width=40%}
-![](figures/benchmark.jpg)
+We conducted offline and online experiments (A/B/C test) on 400k users during 10 days.
 
-:::
-::: {.column width=60%}
+- Version A (baseline): recommender system
+- Version B: DPP filter using personalized quality scores $q_i$
+- Version C: DPP filter using $q_i = 1$
 
-## Results
-
-![](figures/benchmark-quality-diversity.png)
-
-:::
-::::::
-
-SVD is very relevant (DCG@20 high) but not diverse (volume low)  
-
-# Determinantal survey sampling
-
-Actually during my PhD we used DPP to select a batch of diverse questions for assessing student level
-
-DPP are implemented in Mangaki and in DPPy
-
-Fancy applications like $O(\log N)$ with a binary search tree or $O(\alpha N)$ recommending without looking at all $N$ items.
+DPPs are implemented in DPPy by former colleague Guillaume Gautier at Inria Lille
 
 \vfill
 
-\footnotesize
-
-\fullcite{Vie2018DPP}
+\small
 
 \fullcite{Gautier2019}
 
-\fullcite{gillenwater2019tree}
+# Stochastic or deterministic?
 
-\fullcite{calandriello2020sampling}
+We sample $k$-DPP proportionally to $\det K_S$
 
-# Approximate computation of DPP
+YouTube [@wilhelm2018practical] computes instead the greedy max of $\displaystyle \mathop{\textnormal{argmax}}_{S, |S| = k} \det K_S$
 
-Nyström or quadrature method: ${\displaystyle \int _{a}^{b}h(x)\; dx\approx \sum _{k=1}^{n}w_{k}h(x_{k})}$
+They happily reported "+0.5%" of increased user engagement (significant? \raisebox{-2pt}{\includegraphics{figures/shrug.pdf}})
 
-Approximate Gram matrix $X X^T$ with a subset $X_S X_S^T$
+We hypothesize that a deterministic approach does not cover the catalogue well
 
-Either select this subset $S$ greedily [@drineas2012fast] or sequentially \parencite{calandriello2016analysis}, recursively \parencite{musco2017recursive}, with divide and conquer \parencite{cherfaoui2022scalable}
+\vfill
 
-Some people use Nyström to speed up DPP \parencite{affandi2013nystrom}
+\small
 
-Some people use DPP to speed up Nyström \parencite{li2016fast}
+\fullcite{wilhelm2018practical}
 
-Perhaps the "leverage score" for estimating the new information for a point is actually what we want to optimize: items that are not correlated with history
-
-$$\ell_i = [K (K + \lambda I)^{-1}]_{ii} \quad \textnormal{(also takes $O(N^3)$ to compute)}$$
-
-# Conditional DPP
-
-\only<1>{\includegraphics{figures/dpp-cond1.png}}
-\only<2>{\includegraphics{figures/dpp-cond2.png}}
-
-# So
-
-![](figures/culture-pipeline.png)
-
-# Ongoing work
-
-We[^1] are about to A/B test the DPP on 100k of users
-
-Inria ethical committee (COERLE), etc.
+# Results
 
 \begin{table}
 \begin{tabular}{ccrc} \toprule
@@ -243,7 +197,7 @@ Model A & \textbf{0.525} & 1 & 2.759 \\
 Model B & 0.399 & $\times$24.7 & \textbf{3.404} \\ 
 Model C & 0.381 & $\times$\textbf{28.8} & \textbf{3.482} \\ \bottomrule
 \end{tabular}
-\caption{Offline results comparing baseline (A) vs DPP-based recommenders (B and C). Volume ratios use A as reference.}
+\caption{Offline results comparing baseline (A) vs DPP-based recommenders (B and C).}
 \label{tab:offline_results}
 \end{table} 
 
@@ -254,17 +208,38 @@ Group A & \textbf{0.54\%} & 1  & 3.132 \\
 Group B & 0.34\%* & $\times$12 & \textbf{3.512*} \\ 
 Group C & 0.29\%* & $\times$\textbf{15.8}  & \textbf{3.590*} \\ \bottomrule
 \end{tabular}
-\caption{Online A/B/C test results. Values with * denote statistical significance ($p<0.001$) versus Group A.}
+\caption{Online A/B/C test results. Values with * denote statistical significance ($p<0.001$).}
 \label{tab:online_results}
 \end{table}
 
+# Conditional DPP for directly optimizing diversification
 
+\only<1>{\includegraphics{figures/dpp-cond1.png}}
+\only<2>{\includegraphics{figures/dpp-cond2.png}}
 
-[^1]: Hiba Bederina, Clémence Réda, Carole Ibrahim, Laurent Montier, Daniel Cuesta, JJV
+# Limitations and future work
 
-# No need of a ***Thank you for your attention*** slide
+:::::: {.columns}
+::: {.column width=70%}
+- Only 10 days of A/B test; did it change cultural practice over the long term?
+- On Pass Culture, 90\% of spendings come from search; young users do not look so much at personalized recommendations
+- We got better results with personalized recommendations than constant quality $q_i = 1$ and we can tune a hyperparameter:
+$$\log \det K_S = \alert\lambda \underbrace{\sum_{i \in S} \log q_i}_{\textnormal{quality}} + 2 \underbrace{\log Vol(S)}_{\textnormal{diversity}}$$
+:::
+::: {.column width=30%}
+![](figures/pareto.png)
 
-Just stop your presentation here.
+\centering
+
+Higher volume $\to$
+
+\textcolor{gray}{\texttt{arxiv.org/pdf/2108.03888}}
+:::
+::::::
+
+# Thank you for your attention!
+
+![](figures/fresque.png)
 
 \vfill
 
