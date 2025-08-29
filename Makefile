@@ -14,6 +14,24 @@ shanghai.pdf: shanghai.md
 	xelatex shanghai
 	open $@
 
+soda2025.tex: soda2025.md subtitle4.lua
+	time pandoc -s --lua-filter subtitle3.lua --bibliography=biblio.bib --biblatex $< -t beamer -o $@
+	pdflatex -shell-escape $@
+	biber ${@:.tex=}
+	pdflatex -shell-escape $@
+
+irit.tex: irit.md subtitle4.lua
+	time pandoc -s --lua-filter subtitle3.lua --bibliography=biblio.bib --biblatex $< -t beamer -o $@
+	pdflatex -shell-escape $@
+	biber ${@:.tex=}
+	pdflatex -shell-escape $@
+
+icpc-saclay.tex: icpc-saclay.md subtitle4.lua
+	time pandoc -s --lua-filter subtitle4.lua --bibliography=biblio.bib --biblatex $< -t beamer -o $@
+	lualatex -shell-escape $@
+	biber ${@:.tex=}
+	lualatex -shell-escape $@
+
 kiss.tex: kiss.md kiss.bbl
 	time pandoc -s --lua-filter subtitle3.lua --bibliography=biblio.bib --biblatex $< -t beamer -o $@
 	pdflatex $@
