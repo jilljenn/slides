@@ -1,0 +1,514 @@
+% A Pre-Trained Graph-Based Model\newline for Adaptive Sequencing of Educational Documents
+% Jean Vassoyan¹²; Anan Schütt³; \alert{Jill-Jênn Vie}\textsuperscript{4}; Arun Balajiee\textsuperscript{5}\newline Elisabeth André³; Nicolas Vayatis¹
+% July 7, 2025
+---
+aspectratio: 169
+colorlinks: true
+institute: ¹ ENS Paris-Saclay, France \quad ² onepoint, France \quad ³ University of Augsburg, Germany\newline \textsuperscript{4} Inria, France \quad \textsuperscript{5} University of Pittsburgh, USA
+header-includes:
+  - \def\E{\mathbb{E}}
+  - \usepackage{booktabs}
+  - \def\hfilll{\hspace{0pt plus 1 filll}}
+---
+
+# Jill-Jênn Vie
+
+- Chercheur à Inria
+- Thèse en évaluation adaptative (avec Popineau, Bourda, Bruillard)
+- Appliquée à la certification Pix des compétences numériques en 2016
+- Préparateur (coach) de l'X aux concours de programmation \pause (#1 SWERC 2024)
+
+\centering
+
+![](figures/xeppelin2024.jpg){width=80%}
+
+# July 7 is Tanabata: Japan's Star Festival
+
+\centering
+
+![](figures/tanabata0.jpg){width=60%}
+
+\raggedright
+
+Mon vœu : qu'il y ait de l'informatique au tronc commun du bac
+
+# J'ai rejoint le CSEN en 2013
+
+\centering
+
+![](figures/informatique-csen.jpg){width=50%}
+
+\raggedright 
+
+Franck Silvestre est membre du GT Numérique, IA, éducation
+
+# Knowledge elicitation \hfill Preference elicitation
+
+Learning your position in space using few questions
+
+:::::: {.columns}
+::: {.column width=50%}
+![](figures/cp-form.png)
+:::
+::: {.column width=50%}
+![](figures/decisiontree.png)
+:::
+::::::
+
+# Interface adaptative
+
+\centering
+
+![](figures/minipix.png){width=80%}
+
+# Régression logistique pour apprendre les scores (IRT, Elo)
+
+\centering
+
+\resizebox{0.9\linewidth}{!}{$\displaystyle \substack{\normalsize \Pr(\textnormal{"student A solves question B"})\\ \Pr(\textnormal{"player A beats player B"})\\ \Pr(\textnormal{"A is preferred to B"})} = \frac1{1 + \exp(-(score_A - score_B))}$}
+
+\raggedright
+
+Apprendre les scores à partir des données observées (tel utilisateur a réussi tel exercice)
+
+\centering
+
+![](figures/rasch-curve.pdf){width=50%}
+
+:::::: {.columns}
+::: {.column width=55%}
+Mise à jour : si $o \in \{0, 1\}$ est le vrai résultat (réussite ou échec) et $p$ était la probabilité :
+
+$$score := score + \underbrace{(o - p)}_{\textnormal{positif ssi réussite }}$$
+
+(descente de \alert{gradient}, i.e. dérivée de la proba)
+:::
+::: {.column width=45%}
+![](figures/irt.pdf)
+:::
+::::::
+
+# Background: Reinforcement learning (Sutton and Barto, 1988, 2018, 2022)
+
+![](figures/rl.png)
+
+# Background: optimizing learning outcomes
+
+One teacher to many students: not personalized
+
+One agent per student: everyone receives a different sequence of activities:  
+"try exercise $\to$ fail $\to$ read resource $\to$ try exercise $\to$ succeed" and learn
+
+Why are there so many sequential MOOCs, but no personalized MOOCs?  
+OK now we have LLMs, but they optimize human preferences, not learning outcomes
+
+Teacher has to \alert{guess} where students are, to start personalizing learning resources
+
+- Can we model personalized learning using reinforcement learning (RL) in the real world? (few students, few interactions per student)
+- Can we avoid relying on cumbersome data structures? (reduce teacher workload)
+
+# Problem description
+
+A student is an episode of learning (states, actions, observables) $s_0 \to a_1 \to o_1 \to s_1 \to a_2 \to o_2 \to \cdots \to s_{T - 1} \to a_T \to o_T \to s_{T}$
+
+Teacher using history $h_t = (a_1, o_1, \ldots, a_t, o_t)$ chooses next action $\pi : h_t \mapsto a_{t + 1}$ (policy)
+
+Assume $V$ a function of goodness of states (e.g. predicted score on an exam)
+
+Goal: $V(s_{T}) - V(s_0)$ as high as possible, in average: $\E_{s_0, \pi} V(s_T) - V(s_0)$
+
+Challenges:
+
+- $s$ are unobserved
+- Sometimes only sparse rewards at the end; $\sum_t V(s_{t + 1}) - V(s_t) = V(s_T) - V(s_0)$
+- Actually rewards are estimated with $V$, not observed
+
+# Related theory: Cognitive diagnosis
+
+## A toy example {.subtitle}
+
+We want to assess your skills in some domain, by asking you to complete some tasks.
+
+\centering
+\begin{tabular}{rlcccc} \toprule
+& & \multicolumn{4}{c}{Knowledge components}\\
+& & \textbf{form} & \textbf{mail} & \textbf{copy} & \textbf{url}\\ \midrule
+T1 & Send a mail & \textbf{form} & \textbf{mail}\\
+T2 & Fill a form & \textbf{form}\\
+T3 & Share a link & & & \textbf{copy} & \textbf{url}\\
+T4 & Type a URL & \textbf{form} & & & \textbf{url}\\ \bottomrule
+\end{tabular}
+
+\raggedright
+\def\correct{\textcolor{green!50!black}{Correct !}}
+\def\incorrect{\textcolor{red}{Incorrect.}}
+
+We administer task 1. \correct{}  
+$\Rightarrow$ \textbf{form} & \textbf{mail} : mastered. Task 2 brings few information.
+
+We administer task 4. \incorrect{}  
+$\Rightarrow$ \textbf{url} seems unmastered. Task 3 will bring few information.
+
+## Feedback
+
+*You seem to master **form** & **mail** but not **url**.*  
+
+# Related theory: Cognitive diagnosis
+
+## Discrete latent states \\(s \\in \\{0, 1\\}^K\\) {.subtitle}
+
+:::::: {.columns}
+::: {.column width=70%}
+Maintain distribution $p(s)$: our belief of where the student is\bigskip
+
+Goal: take action $a$ that gives observation $o$ that reduces (greedily) entropy of posterior $p(s|o)$ as much as possible\bigskip
+
+(a bit like MasterMind: every turn gives partial information)\bigskip
+
+Unfortunately:
+
+- usually assumes that latent state (knowledge) is static, not dynamic
+- cumbersome to build such a graph for every new domain
+:::
+::: {.column width=30%}
+![](figures/prerequisite.png)
+
+Assumes that a knowledge graph of prerequisites is known (costly to make)
+:::
+::::::
+
+COMPER (Pierrot et al. 2021) has a similar goal of prioritizing the skills to practice
+
+# Application à la certification des compétences numériques Pix
+
+\centering
+
+:::::: {.columns}
+::: {.column width=30%}
+![](figures/pix-ref.png)
+:::
+::: {.column width=70%}
+Asking questions that validate/invalidate the highest expected number of nodes among 800 skills\bigskip
+
+\footnotesize
+
+\fullcite{Vie2017PIX}
+:::
+::::::
+
+![](figures/example.pdf){width=90%}
+
+# Related theory: Information geometry and Bayesian design of experiments
+
+Maintain distribution $p(s)$: our belief of where the student is
+
+Goal: either take action $a$ that gives observation $o$
+
+- that reduces entropy of posterior $p(s|o)$ as much as possible
+- of likelihood $p(o|s)$ as uncertain as possible, i.e. variance of gradient of log-likelihood (Fisher information) as high as possible
+
+Unfortunately: also usually assumes knowledge is static
+
+# A toy example of Fisher information in item response theory
+
+:::::: {.columns}
+::: {.column width=55%}
+Let's take the Rasch IRT model
+
+Likelihood: $L_a = p(o_a|s) = \sigma(s - d_a) = p_a$\bigskip
+
+1\textsuperscript{st} derivative: Gradient of log-likelihood (like Elo update): $\nabla_s \log L_a = o_a - p_a$  
+$>0$ if correct answer, $<0$ if incorrect answer.\bigskip
+
+2\textsuperscript{nd} derivative (Hessian): Fisher information $\mathcal{F}_a(s) = - \frac{\partial^2 \log L_a}{\partial^2 s} = p_a (1 - p_a)$\bigskip
+:::
+::: {.column width=45%}
+![](figures/irt.pdf)
+:::
+::::::
+
+Which means for the Rasch model, the action of maximum Fisher information is the one of probability \alert{closest to $1/2$} (estimated at current best estimate).
+
+Good for converging estimates, not for optimizing learning outcomes
+
+# Related work: Knowledge tracing
+
+## Predicting student performance given history (Corbett \\& Anderson, 1987; Piech et al., 2015) {.subtitle}
+
+Train on student episodes of learning (states, actions, observables) $s_0 \to a_1 \to o_1 \to s_1 \to a_2 \to o_2 \to \cdots \to s_{T - 1} \to a_T \to o_T \to s_{T}$  
+Test on new student episodes of learning
+
+![](figures/dkt.png)
+
+Really many papers about it, but this is a supervised learning problem, not RL (a bit related to "supervised fine tuning" in LLM): the policy of asking questions is not changed
+
+Can be used to build a model of the environment, then learn to optimize it (model-based RL), but the policy may overfit the simulator (Doroudi et al. 2017)
+
+# Related work: RL in education
+
+Bassen et al. (CHI 2020) directly optimizes post-test minus pre-test using model-free RL
+
+But requires many students (10000s if Q-learning, 100s-1000s if PPO) because the reward is sparse
+
+Has to learn from scratch on each new domain
+
+\vfill
+
+\fullcite{Bassen2020}
+
+# Problem description
+
+## A dynamic version of cognitive diagnosis {.subtitle}
+
+:::::: {.columns}
+::: {.column width=55%}
+- States are binary states $s \in \{0, 1\}^K$
+- Actions are documents
+- Observations are:
+  - Easy (0) if already mastered,
+  - "I learned something" (1) if within reach
+  - Hard (0) if not have the prerequisites
+- Dynamic: if user learns something, then reward is 1 and state evolves
+:::
+::: {.column width=45%}
+![](figures/zpd2.png)
+:::
+::::::
+
+Initial knowledge $p(s_0)$ is either $p(0) = 1$ (no prior knowledge), or uniform $p(s_0)$, or decreasing exponential.
+
+## Goal
+
+Maximize learned skills i.e. $V(s_T) - V(s_0)$ where $V(s) = |s|$  
+Or equivalently: maximize the sum of obtained rewards along the sequence
+
+# Transfer learning framework
+
+:::::: {.columns}
+::: {.column width=60%}
+## Pre-training
+
+Learn $\pi$ on sequential lessons (simple environments)\bigskip
+
+## Evaluation
+
+Fine-tuning $\pi$ on new, more complex graphs (hard environments)
+:::
+::: {.column width=40%}
+![](figures/linear_non_linear.png)
+:::
+::::::
+
+Can we pretrain our model on easy-to-find simple graphs (Coursera, etc.)?
+
+Then generalize to new domain graphs within few episodes?
+
+# Proposed solution
+
+In this work we present a method based on GNNs (Graph transformers):
+
+- We keep fine-tuning within dozens of episodes instead of thousands  
+(Bassen et al., 2020)
+- Our model does not assume access to the graph of prerequisites between keywords
+- (Our synthetic experiments do assume such a graph of prerequisites for simulating the environment.)
+- But our model has access to the textual content of learning resources (keyword-document bipartite graph, and word embeddings)
+
+# Apprentissage en contexte
+
+Traditional ML: fit(train), predict(test)
+
+Transfer learning: pretrain, finetune(train), predict(test) \hfill (e.g. word embeddings)
+
+In-context learning: pretrain (LLM), predict(test, train)
+
+\vfill
+
+\small
+
+\fullcite{brown2020language}
+
+\fullcite{ouyang2022training}
+
+\fullcite{hollmann2025}
+
+# Les grands modèles de langage (LLM) : quels objectifs ?
+
+1. Transformer : prédire le mot suivant
+
+```
+Transformers / are / a / new / machine / [learning]  
+Transformers / are / a / new / machine / learning / [architecture]
+```
+
+2. Données de démonstration d'experts :
+
+```
+Query: put the first letters in uppercase in "optimizing human learning"
+Answer: Optimizing Human Learning
+```
+
+3. Données de comparaison d'experts :
+
+```
+Query: write a poem
+Answer 1: Roses are red
+Answer 2: Once upon a time, a prince in a castle
+```
+
+Où la réponse 2 est votée favorablement par les experts
+
+ChatGPT est donc entraîné pour plaire aux experts et généraliser à de nouvelles tâches
+
+# Getting inspiration from LLMs
+
+| Our work in RL in education                                   | Training of LLMs                           |
+|-----------------------------------------|--------------------------------------------|
+| Many MOOCs available, but sequential    | Many raw data available |
+| Knowledge tracing, i.e. learning a model of the environment | Generative pre-training: predict the next token |
+| Learning a behavior policy from teacher data | Supervised fine-tuning: few expert data available |
+| Fine-tuning from interaction with "real" students | Reinforcement learning from human feedback: fine-tuning on the reward model of preferences |
+
+# Evaluation
+
+Can we pretrain our model on easy-to-find simple graphs?
+
+Then generalize to new domain graphs?
+
+## Models
+
+- Similar architecture (our earlier work) but not pre-trained
+- CMAB: LinUCB from contextual bandits; but does not consider long-term rewards, just immediate rewards
+- Bassen et al. (model-free PPO actor-critic); needs to be trained from scratch
+
+# Zero-shot performance of our model
+
+$x$-axis: number of students in the fine-tuning phase, i.e. learning episodes  
+$y$-axis: learning gains, i.e. $V(s_T) - V(s_0)$
+
+![](figures/results_target_task.png)
+
+Encouraging results, but on synthetic data
+
+Models learn to adapt to various (unobserved) student states, just from content (word embeddings) and interaction
+
+It's rare to see RL fine-tuning within dozens of episodes
+
+# Take home message
+
+We provided a dynamic environment for cognitive diagnosis
+
+Use dense rewards (in our case, immediate feedback) instead of sparse rewards
+
+Pre-train on 22 linear available corpuses to provide zero-shot performance on 1 graph-based new domain
+
+# Future work
+
+Try it on real students (Ecole polytechnique)
+
+If we provide a text-based version of the environment, then a LLM agent can play too (cf. Carta et al. 2023)
+
+Maintain $p(s)$ over possible states and optimize $\E_{s \sim p(s)} V(s)$ (Thompson sampling?)
+
+# Link with GraphRAG?
+
+:::::: {.columns}
+::: {.column width=60%}
+![](figures/graphrag.jpg)
+:::
+::: {.column width=40%}
+Jean: "Actually a LLM agent can directly generate new documents"  
+(hard to evaluate; promising results with MCQs and learning programming)
+
+\vspace{2cm}
+
+\small
+
+\fullcite{edge2024local}
+:::
+::::::
+
+# Impact of our research in AI for education
+
+## Trap question from the French government {.subtitle}
+
+> If we have AI for education, do we need more computer science teachers or fewer computer science teachers?
+
+Simple answer: even with Google Translate we still need English teachers (do we?);  
+we can have both
+
+First answer: automated measurement (exam value $V$) is an altimeter (it measures potential). The (human) teacher still has to elevate the students (policy $\pi$).
+
+LLM answer: "This is a complex question with no easy answer!"\bigskip
+
+> But indeed, if this research (personalized learning paths) is successful, do we still need teachers?
+
+Second answer: possibly we are more motivated if we see our progress, get encouragement, or learn as peers (in groups), not just everyone behind their screen (e.g. Duolingo is addictive, but do people actually learn the language?)
+
+# How about the amount of CS teachers?
+
+I firmly believe we need more educators in this topic, but I should still sharpen my arguments. For example, any modeling (physics, biology) involves computation, and digital data is everywhere. Still, some people believe we need fewer programmers.
+
+:::::: {.columns}
+::: {.column width=70%}
+## Other risks LLM vs. human teachers
+
+The risk of increasing inequality (people who already have knowledge accelerate with programming and LLMs) $\to$\bigskip
+
+But decreasing inequality in language (e.g. immigrants can understand what teachers say in their own language using LLMs)\bigskip
+
+Perhaps COVID taught us we still need human teachers $\to$
+:::
+::: {.column width=30%}
+![](figures/kz-covid.png)
+
+![](figures/pisa2022-france.png)
+:::
+::::::
+
+# LLMs in education
+
+Impressive democratization of universal knowledge (and hallucinations):  
+even our grandparents have heard of it
+
+Still, too many people only know ChatGPT as LLM  
+(well since last week, people know about DeepSeek too)
+
+Offline LLMs represent an opportunity for decentralized, private applications  
+(keeping data in the classroom, quantized models for reducing environmental impact)
+
+
+It makes no longer sense to evaluate the \alert{outcome} only (as we don't know who did it)  
+If a teacher gives a dissertation, it's not for the final product but for the thinking exercise  
+Should we evaluate the \alert{reasoning} of students? Using think-aloud data and local LLMs?
+
+# Thank you for your attention!
+
+My webpage: `jjv.ie` \hfill `jill-jenn.vie@inria.fr`  
+(includes source of those slides \url{https://jjv.ie/slides/irit.pdf})
+
+# 
+
+\centering
+
+![](figures/tabpfn-nature.png)
+
+# TabPFN is pretrained on 1 million synthetic datasets
+
+- Pretrain a foundation model to "train and test" (very meta)
+- Better than training from scratch (4 hours $\to$ 2.8 seconds)
+- Directly estimate $p(y_{test} \mid x_{test}, D_{train})$ using in-context learning $\to$ strong baseline
+- Limitations: up to 10000 samples, does not handle missing data very well
+
+\pause
+
+\centering
+
+:::::: {.columns}
+::: {.column width=72%}
+![](figures/tabicl.png)
+:::
+::: {.column width=28%}
+\vspace{5mm}
+\fullcite{qu2025tabicl}
+:::
+::::::
